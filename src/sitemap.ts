@@ -6,26 +6,26 @@ import {
   Router,
 } from '@amagaki/amagaki';
 
-interface RobotsTxtRouteProviderOptions {
+interface SitemapPluginOptions {
   sizes: Array<string>;
 }
 
-export class RobotsTxtRouteProvider extends RouteProvider {
-  options: RobotsTxtRouteProviderOptions;
+export class SitemapPlugin extends RouteProvider {
+  options: SitemapPluginOptions;
 
-  constructor(router: Router, options: RobotsTxtRouteProviderOptions) {
+  constructor(router: Router, options: SitemapPluginOptions) {
     super(router);
     this.type = 'robots';
     this.options = options;
   }
 
-  static register(pod: Pod, options?: RobotsTxtRouteProviderOptions) {
-    const provider = new RobotsTxtRouteProvider(pod.router, options);
+  static register(pod: Pod, options?: SitemapPluginOptions) {
+    const provider = new SitemapPlugin(pod.router, options);
     pod.router.addProvider(provider);
     return provider;
   }
 
-  async routes() {
+  async routes():Promise<any> {
     return [new RobotsTxtRoute(this), new SitemapRoute(this)];
   }
 }
