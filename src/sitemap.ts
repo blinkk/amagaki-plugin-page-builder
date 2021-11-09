@@ -20,7 +20,7 @@ export class SitemapPlugin extends RouteProvider {
   }
 
   static register(pod: Pod, options?: SitemapPluginOptions) {
-    const provider = new SitemapPlugin(pod.router, options);
+    const provider = new SitemapPlugin(pod.router, options ? options : { sizes: [] });
     pod.router.addProvider(provider);
     return provider;
   }
