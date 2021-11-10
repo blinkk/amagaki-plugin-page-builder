@@ -1,6 +1,5 @@
 {
     "name": "@amagaki/amagaki-plugin-sitemap",
-    "version": "1.0",
     "license": "MIT",
     "homepage": "https://amagaki.dev",
     "repository": {
@@ -12,7 +11,6 @@
     },
     "main": "./dist/index.js",
     "scripts": {
-        "build:example": "amagaki build example",
         "check": "gts check",
         "clean": "gts clean",
         "compile": "tsc",

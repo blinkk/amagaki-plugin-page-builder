@@ -6,9 +6,7 @@ import {
   Router,
 } from '@amagaki/amagaki';
 
-interface SitemapPluginOptions {
-  sizes: Array<string>;
-}
+interface SitemapPluginOptions {}
 
 export class SitemapPlugin extends RouteProvider {
   options: SitemapPluginOptions;
@@ -20,7 +18,7 @@ export class SitemapPlugin extends RouteProvider {
   }
 
   static register(pod: Pod, options?: SitemapPluginOptions) {
-    const provider = new SitemapPlugin(pod.router, options ? options : { sizes: [] });
+    const provider = new SitemapPlugin(pod.router, options ?? {} );
     pod.router.addProvider(provider);
     return provider;
   }
@@ -65,11 +63,11 @@ class SitemapRoute extends Route {
       {% for route in routes %}
       <url>
           {% set doc = route.doc %}
-          <loc>{{doc.url|url}}</loc>
-          <xhtml:link href="{{doc.url|url}}" hreflang="x-default" rel="alternate" />
+          <loc>{{doc.url}}</loc>
+          <xhtml:link href="{{doc.url}}" hreflang="x-default" rel="alternate" />
           {% for locale in doc.locales %}
           {% set doc = pod.doc(doc.podPath, locale) %}
-          <xhtml:link href="{{doc.url|url}}" hreflang="{{doc.locale.id}}" rel="alternate" />
+          <xhtml:link href="{{doc.url}}" hreflang="{{doc.locale.id}}" rel="alternate" />
           {% endfor %}
       </url>
       {% endfor %}
