@@ -39,10 +39,10 @@ class RobotsTxtRoute extends Route {
   }
 
   async build() {
+    // TODO: Add Sitemap property, hook into document.
     return `
       User-agent: *
       Allow: /
-      Sitemap: doc.sitemap
     `;
   }
 }
