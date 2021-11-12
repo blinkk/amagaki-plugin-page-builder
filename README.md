@@ -17,23 +17,11 @@ npm install --save @amagaki/amagaki-plugin-sitemap
 2. Add to `amagaki.ts`.
 
 ```typescript
-// import {GreenhousePlugin} from '@amagaki/amagaki-plugin-greenhouse';
-// import {BuilderPlugin, Pod} from '@amagaki/amagaki';
+import {SitemapPlugin} from '@amagaki/amagaki-plugin-sitemap';
+import {BuilderPlugin, Pod} from '@amagaki/amagaki';
 
-// export default (pod: Pod) => {
-//   // Sync Greenhouse prior to building.
-//   const builderPlugin = pod.plugins.get('BuilderPlugin') as BuilderPlugin;
-//   builderPlugin.addBeforeBuildStep(async () => {
-//     const greenhouse = GreenhousePlugin.register(pod, {
-//       boardToken: 'boardToken',
-//     });
-//     await greenhouse.bindCollection({
-//       collectionPath: '/content/jobs',
-//     });
-//     await greenhouse.saveEducationFile({
-//       podPath: '/content/partials/education.yaml',
-//     });
-//   });
+export default (pod: Pod) => {
+  SitemapPlugin.register(pod);
 };
 ```
 
