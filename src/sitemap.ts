@@ -7,8 +7,8 @@ import {
 } from '@amagaki/amagaki';
 
 interface SitemapPluginOptions {
-  sitemapPath?: any,
-  robotsTxtPath?: any,
+  sitemapPath?: String,
+  robotsTxtPath?: String,
 }
 
 export class SitemapPlugin extends RouteProvider {
