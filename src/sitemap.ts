@@ -6,7 +6,10 @@ import {
   Router,
 } from '@amagaki/amagaki';
 
-interface SitemapPluginOptions {}
+interface SitemapPluginOptions {
+  sitemapPath?: string;
+  robotsTxtPath?: string;
+}
 
 export class SitemapPlugin extends RouteProvider {
   options: SitemapPluginOptions;
@@ -29,13 +32,15 @@ export class SitemapPlugin extends RouteProvider {
 }
 
 class RobotsTxtRoute extends Route {
-  constructor(provider: RouteProvider) {
+  provider: SitemapPlugin;
+
+  constructor(provider: SitemapPlugin) {
     super(provider);
     this.provider = provider;
   }
 
   get urlPath() {
-    return '/robots.txt';
+    return this.provider.options.robotsTxtPath ?? '/robots.txt';
   }
 
   async build() {
@@ -48,13 +53,15 @@ class RobotsTxtRoute extends Route {
 }
 
 class SitemapRoute extends Route {
-  constructor(provider: RouteProvider) {
+  provider: SitemapPlugin;
+
+  constructor(provider: SitemapPlugin) {
     super(provider);
     this.provider = provider;
   }
 
   get urlPath() {
-    return '/sitemap.xml';
+    return this.provider.options.sitemapPath ?? '/sitemap.xml';
   }
 
   get templateSource() {

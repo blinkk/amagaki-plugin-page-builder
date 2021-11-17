@@ -4,5 +4,8 @@ import {Pod} from '@amagaki/amagaki';
 import {SitemapPlugin} from '../dist';
 
 export default async (pod: Pod) => {
-    SitemapPlugin.register(pod);
+    SitemapPlugin.register(pod, {
+        sitemapPath: '/foo/sitemap.xml',
+        robotsTxtPath: '/bar/robots.txt'
+    });
 };
