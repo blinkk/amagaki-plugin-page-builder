@@ -7,8 +7,8 @@ import {
 } from '@amagaki/amagaki';
 
 interface SitemapPluginOptions {
-  sitemapPath?: String,
-  robotsTxtPath?: String,
+  sitemapPath?: string,
+  robotsTxtPath?: string,
 }
 
 export class SitemapPlugin extends RouteProvider {
@@ -40,7 +40,7 @@ class RobotsTxtRoute extends Route {
   }
 
   get urlPath() {
-    return `${this.provider.options.robotsTxtPath}` ?? '/robots.txt';
+    return this.provider.options.robotsTxtPath ?? '/robots.txt';
   }
 
   async build() {
@@ -61,7 +61,7 @@ class SitemapRoute extends Route {
   }
 
   get urlPath() {
-    return `${this.provider.options.sitemapPath}` ?? '/sitemap.xml';
+    return this.provider.options.sitemapPath ?? '/sitemap.xml';
   }
 
   get templateSource() {
