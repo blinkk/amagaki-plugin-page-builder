@@ -10,7 +10,7 @@ import {
   interpolate,
 } from '@amagaki/amagaki';
 
-import { SitemapPlugin } from '.';
+import {SitemapPlugin} from '.';
 import jsBeautify from 'js-beautify';
 
 type Partial = any;
@@ -49,25 +49,55 @@ interface PageBuilderOptions {
   footer?: BuiltinPartial;
   header?: BuiltinPartial;
   head?: {
-    /** The description to use for the site. This is used as the default <meta> description, if a page does not specify its own `description` field. */
+    /**
+     * The description to use for the site. This is used as the default <meta>
+     * description, if a page does not specify its own `description` field.
+     */
     description?: string;
+
     /** The favicon. */
     icon?: Resource;
-    /** The image URL to use for the site. This is used as the default <meta> image, if a page does not specify its own `image` field. Note this image is used primarily when the page is shared. The image size should generally be `1200x630`. */
+
+    /**
+     * The image URL to use for the site. This is used as the default <meta>
+     * image, if a page does not specify its own `image` field. Note this image
+     * is used primarily when the page is shared. The image size should
+     * generally be `1200x630`.
+     */
     image?: string;
+
     /** A list of scripts to include in the <head> element. */
     scripts?: Resource[];
-    /** The site name. Used as the default <title> for any page that does not specify its own `title` field. Also used as the `site_name` meta value. */
+
+    /**
+     * The site name. Used as the default <title> for any page that does not
+     * specify its own `title` field. Also used as the `site_name` meta value.
+     */
     siteName?: string;
+
     /** A list of all stylesheets to include in the <head> element. */
     stylesheets?: Resource[];
+
     /** The Twitter username (including @) belonging to the owner of the site. */
     twitterSite?: string;
+
+    /**
+     * The suggested color for browsers to use to customize the surrounding UI.
+     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name/theme-color
+     */
+    themeColor?: string;
+
+    /** Whether to add a `noindex` meta tag to the page. */
+    noIndex?: boolean;
+
     /** Append extra HTML to the bottom of the <head> element. */
     extra?: string[];
   };
   body?: {
-    /** Override the class on the <body> element. The class can either be a string or an async function that returns a string. */
+    /**
+     * Override the class on the <body> element. The class can either be a
+     * string or an async function that returns a string.
+     */
     class?: string | ((context: TemplateContext) => Promise<string>);
     /** Prepend HTML to the top of the <body> element. */
     prepend?: string[];
@@ -219,6 +249,9 @@ export class PageBuilder {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         ${this.buildHeadMetaElements({
+          noIndex: this.getFieldValue('noIndex') ?? this.options.head?.noIndex,
+          themeColor:
+            this.getFieldValue('themeColor') ?? this.options.head?.themeColor,
           description:
             this.getFieldValue('description') ?? this.options.head?.description,
           image: this.getFieldValue('image') ?? this.options.head?.image,
@@ -234,10 +267,16 @@ export class PageBuilder {
         ${this.buildHeadLinkElements({
           icon: this.getFieldValue('icon') ?? this.options.head?.icon,
         })}
-        ${this.options.head?.stylesheets?.map(style => this.buildStyleLinkElement(style))
-          .join('\n') ?? ''}
-        ${this.options.head?.scripts?.map(script => this.buildScriptElement(script))
-          .join('\n') ?? ''}
+        ${
+          this.options.head?.stylesheets
+            ?.map(style => this.buildStyleLinkElement(style))
+            .join('\n') ?? ''
+        }
+        ${
+          this.options.head?.scripts
+            ?.map(script => this.buildScriptElement(script))
+            .join('\n') ?? ''
+        }
         ${
           this.options.head?.extra
             ? await this.buildExtraElements(this.options.head.extra)
@@ -292,15 +331,27 @@ export class PageBuilder {
     image?: string;
     locale?: string;
     siteName?: string;
+    themeColor?: string;
     title: string;
     twitterSite?: string;
     url: string;
+    noIndex?: boolean;
   }) {
     return `
       ${options.title ? `<title>${options.title}</title>` : ''}
       ${
         options.description
           ? `<meta name="description" content="${options.description}">`
+          : ''
+      }
+      ${
+        options.themeColor
+          ? `<meta name="theme-color" content="${options.themeColor}">`
+          : ''
+      }
+      ${
+        options.noIndex
+          ? `<meta name="robots" content="noindex">`
           : ''
       }
       <meta name="referrer" content="no-referrer">
@@ -311,7 +362,11 @@ export class PageBuilder {
           : ''
       }
       <meta property="og:url" content="${options.url}">
-      ${options.title ? `<meta property="og:title" content="${options.title}">` : ''}
+      ${
+        options.title
+          ? `<meta property="og:title" content="${options.title}">`
+          : ''
+      }
       ${
         options.description
           ? `<meta property="og:description" content="${options.description}">`
@@ -334,7 +389,11 @@ export class PageBuilder {
           ? `<meta property="twitter:site" content="${options.twitterSite}">`
           : ''
       }
-      ${options.title ? `<meta property="twitter:title" content="${options.title}">` : ''}
+      ${
+        options.title
+          ? `<meta property="twitter:title" content="${options.title}">`
+          : ''
+      }
       ${
         options.description
           ? `<meta property="twitter:description" content="${options.description}">`
