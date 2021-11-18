@@ -6,7 +6,7 @@ import {
   Router,
 } from '@amagaki/amagaki';
 
-interface SitemapPluginOptions {
+export interface SitemapPluginOptions {
   sitemapPath?: string;
   robotsTxtPath?: string;
 }

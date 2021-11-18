@@ -1,0 +1,3 @@
+partials:
+- partial: hero
+  title: Hello World!

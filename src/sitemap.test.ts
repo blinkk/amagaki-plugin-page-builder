@@ -1,5 +1,6 @@
-import {ExecutionContext} from 'ava';
 import {Pod, Route} from '@amagaki/amagaki';
+
+import {ExecutionContext} from 'ava';
 import test from 'ava';
 
 test('SitemapPlugin: sitemap.xml', async (t: ExecutionContext) => {
@@ -11,14 +12,14 @@ test('SitemapPlugin: sitemap.xml', async (t: ExecutionContext) => {
   <?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
       <url>
-          <loc>http://localhost/pages/bar/</loc>
-          <xhtml:link href="http://localhost/pages/bar/" hreflang="x-default" rel="alternate" />
-          <xhtml:link href="http://localhost/pages/bar/" hreflang="en" rel="alternate" />
-      </url>
-      <url>
           <loc>http://localhost/pages/foo/</loc>
           <xhtml:link href="http://localhost/pages/foo/" hreflang="x-default" rel="alternate" />
           <xhtml:link href="http://localhost/pages/foo/" hreflang="en" rel="alternate" />
+      </url>
+      <url>
+          <loc>http://localhost/pages/</loc>
+          <xhtml:link href="http://localhost/pages/" hreflang="x-default" rel="alternate" />
+          <xhtml:link href="http://localhost/pages/" hreflang="en" rel="alternate" />
       </url>
   </urlset>
   `.trim();
