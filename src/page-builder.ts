@@ -434,8 +434,7 @@ export class PageBuilder {
       }
     );
     const partialBuilder = [];
-    // Add CSS and JS files if they exist.
-    // TODO: Avoid adding files if they've already been loaded.
+    // Load resources required by partial module.
     cssFile.exists && partialBuilder.push(this.buildStyleLinkElement(cssFile));
     jsFile.exists && partialBuilder.push(this.buildScriptElement(jsFile));
     // TODO: Handle error when partial doesn't exist.
@@ -463,6 +462,10 @@ export class PageBuilder {
   buildScriptElement(resource: Resource, defer = false, async = false) {
     const href = this.getHrefFromResource(resource);
     const url = this.getUrl(href);
+    // Resource has already been loaded, don't build again.
+    if (this.resourceUrls.includes(url)) {
+      return '';
+    }
     this.resourceUrls.push(url);
     return `
       <script
@@ -477,6 +480,10 @@ export class PageBuilder {
   buildStyleLinkElement(resource: Resource, async = true) {
     const href = this.getHrefFromResource(resource);
     const url = this.getUrl(href);
+    // Resource has already been loaded, don't build again.
+    if (this.resourceUrls.includes(url)) {
+      return '';
+    }
     this.resourceUrls.push(url);
     return `
       <link
