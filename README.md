@@ -18,20 +18,25 @@ npm install --save @amagaki/amagaki-plugin-page-builder
 2. Add to `amagaki.ts`.
 
 ```typescript
-import {SitemapPlugin} from '@amagaki/amagaki-plugin-page-builder';
-import {BuilderPlugin, Pod} from '@amagaki/amagaki';
+import {PageBuilder} from '@amagaki/amagaki-plugin-page-builder';
+import {Pod} from '@amagaki/amagaki';
 
 export default (pod: Pod) => {
-  SitemapPlugin.register(pod);
+  PageBuilder.register(pod);
 };
 ```
 
 3. Ensure your site uses the following structure:
 
 ```
-/dist/js/{partial}.js
-/dist/css/{partial}.css
+# Page module templates.
 /views/partials/{partial}.njk
+
+# Page module JavaScript.
+/dist/js/{partial}.js
+
+# Page module CSS.
+/dist/css/{partial}.css
 ```
 
 ## Background

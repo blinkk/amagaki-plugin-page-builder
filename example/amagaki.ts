@@ -1,5 +1,4 @@
-import {PageBuilder, SitemapPlugin} from '../dist';
-
+import {PageBuilder} from '../dist';
 import {Pod} from '@amagaki/amagaki';
 
 export default async (pod: Pod) => {
