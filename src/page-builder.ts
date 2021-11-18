@@ -105,6 +105,16 @@ interface PageBuilderOptions {
     extra?: string[];
   };
   partialPaths?: PartialPaths;
+  /** Options for generating the sitemap. */
+  sitemapXml?: {
+    /** The URL path for the `sitemap.xml`. */
+    path: string;
+  }
+  /** Options for generating the `robots.txt` file. */
+  robotsTxt?: {
+    /** The URL path for the `robots.txt` file. */
+    path: string;
+  }
 }
 
 export class PageBuilder {
@@ -142,6 +152,10 @@ export class PageBuilder {
   }
 
   static register(pod: Pod, options?: PageBuilderOptions) {
+    SitemapPlugin.register(pod, {
+      robotsTxtPath: options?.robotsTxt?.path,
+      sitemapPath: options?.sitemapXml?.path,
+    });
     pod.defaultView = async (context: TemplateContext) => {
       return await PageBuilder.build(context.doc, context, options);
     };
