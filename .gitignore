@@ -1,5 +1,5 @@
 amagaki-*.tgz
-dist/
+/dist/
 example/build
 node_modules/
 secrets.txt
