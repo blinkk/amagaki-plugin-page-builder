@@ -21,6 +21,10 @@ test('PageBuilder', async (t: ExecutionContext) => {
   <meta property="twitter:card" content="summary_large_image">
   <link href="http://localhost/pages/" rel="canonical">
   <link href="http://localhost/pages/" hreflang="x-default" rel="alternate">
+  <link href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&display=swap" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link href="/static/css/main.css" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <script src="/static/js/main.js">
+  </script>
 </head>
 
 <body>

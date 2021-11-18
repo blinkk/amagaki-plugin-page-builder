@@ -466,6 +466,9 @@ export class PageBuilder {
     if (this.resourceUrls.includes(url)) {
       return '';
     }
+    if (!url) {
+      throw new Error(`Resource ${resource} has no URL. Does it exist and is it mapped in \`staticRoutes\`?`);
+    }
     this.resourceUrls.push(url);
     return `
       <script
@@ -483,6 +486,9 @@ export class PageBuilder {
     // Resource has already been loaded, don't build again.
     if (this.resourceUrls.includes(url)) {
       return '';
+    }
+    if (!url) {
+      throw new Error(`Resource ${resource} has no URL. Does it exist and is it mapped in \`staticRoutes\`?`);
     }
     this.resourceUrls.push(url);
     return `
