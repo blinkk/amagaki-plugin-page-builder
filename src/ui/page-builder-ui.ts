@@ -1,3 +1,3 @@
-import { PageBuilderInspector } from "./page-module-inspector";
+import {PageBuilderInspector} from './page-module-inspector';
 
-PageBuilderInspector;
+const ELEMENTS = [PageBuilderInspector];

@@ -12,10 +12,18 @@ export class PageBuilderInspector extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // Update after window is done painting to update module count.
+    // Update after DOM is generated to update the module ID.
     window.setTimeout(() => {
       this.requestUpdate();
+      this.addIdToPageModule();
     });
+  }
+
+  addIdToPageModule() {
+    const pageModule = this.closest('page-module');
+    if (pageModule) {
+      pageModule.id = this.elementId;
+    }
   }
   
   get allInspectors() {
@@ -30,6 +38,10 @@ export class PageBuilderInspector extends LitElement {
     return new URLSearchParams(window.location.search).get('help') !== '0';
   }
 
+  get elementId() {
+    return `m${this.moduleIndex}-${this.partial}`;
+  }
+
   static get styles() {
     return [
       css`
@@ -39,13 +51,20 @@ export class PageBuilderInspector extends LitElement {
           color: #fff;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
           font-size: 10px;
-          font-weight: 700;
+          font-weight: 500;
           padding: 5px 8px;
           position: absolute;
         }
         .help-box__label {
           cursor: default;
           display: inline-block;
+        }
+        .help-box__label a {
+          color: inherit;
+          text-decoration: none;
+        }
+        .help-box__label a:hover {
+          text-decoration: underline;
         }
       `,
     ];
@@ -56,8 +75,10 @@ export class PageBuilderInspector extends LitElement {
       ? html`
         <div class="help-box">
           <div class="help-box__label">
-            ${this.allInspectors.length > 1 ? `${this.moduleIndex}. ` : ''}
-            ${this.partial}
+            <a href="#${this.elementId}">
+              ${this.allInspectors.length > 1 ? `${this.moduleIndex}. ` : ''}
+              ${this.partial}
+            </a>
           </div>
         </div>
         `
