@@ -10,7 +10,8 @@ import {
   interpolate,
 } from '@amagaki/amagaki';
 
-import {SitemapPlugin} from '.';
+import {PageBuilderStaticRouteProvider} from './router';
+import {SitemapPlugin} from './sitemap';
 import jsBeautify from 'js-beautify';
 
 type Partial = any;
@@ -44,7 +45,12 @@ interface GetUrlOptions {
   includeDomain?: boolean;
 }
 
+interface InspectorOptions {
+  enabled: boolean;
+}
+
 interface PageBuilderOptions {
+  inspector?: InspectorOptions;
   beautify?: boolean;
   footer?: BuiltinPartial;
   header?: BuiltinPartial;
@@ -109,12 +115,12 @@ interface PageBuilderOptions {
   sitemapXml?: {
     /** The URL path for the `sitemap.xml`. */
     path: string;
-  }
+  };
   /** Options for generating the `robots.txt` file. */
   robotsTxt?: {
     /** The URL path for the `robots.txt` file. */
     path: string;
-  }
+  };
 }
 
 export class PageBuilder {
@@ -124,6 +130,7 @@ export class PageBuilder {
   partialPaths: PartialPaths;
   context: TemplateContext;
   options: PageBuilderOptions;
+  enableInspector: boolean;
 
   constructor(
     doc: Document,
@@ -135,6 +142,9 @@ export class PageBuilder {
     this.resourceUrls = [];
     this.context = context;
     this.options = options || {};
+    this.enableInspector =
+      this.options.inspector?.enabled ??
+      (this.pod.env.dev || this.pod.env.name === 'staging');
     this.partialPaths = options?.partialPaths ?? {
       css: '/dist/css/partials/${partial.partial}.css',
       js: '/dist/js/partials/${partial.partial}.js',
@@ -156,6 +166,7 @@ export class PageBuilder {
       robotsTxtPath: options?.robotsTxt?.path,
       sitemapPath: options?.sitemapXml?.path,
     });
+    PageBuilderStaticRouteProvider.register(pod);
     pod.defaultView = async (context: TemplateContext) => {
       return await PageBuilder.build(context.doc, context, options);
     };
@@ -296,6 +307,17 @@ export class PageBuilder {
             ? await this.buildExtraElements(this.options.head.extra)
             : ''
         }
+        ${
+          this.enableInspector
+            ? PageBuilderStaticRouteProvider.files
+                .map(path =>
+                  this.buildScriptElement(
+                    `${PageBuilderStaticRouteProvider.urlBase}/${path}`
+                  )
+                )
+                .join('\n')
+            : ''
+        }
       </head>
     `.trim();
   }
@@ -363,11 +385,7 @@ export class PageBuilder {
           ? `<meta name="theme-color" content="${options.themeColor}">`
           : ''
       }
-      ${
-        options.noIndex
-          ? `<meta name="robots" content="noindex">`
-          : ''
-      }
+      ${options.noIndex ? `<meta name="robots" content="noindex">` : ''}
       <meta name="referrer" content="no-referrer">
       <meta property="og:type" content="website">
       ${
@@ -444,8 +462,15 @@ export class PageBuilder {
     const engine = this.pod.engines.getEngineByFilename(
       this.partialPaths.view
     ) as TemplateEngineComponent;
+    partialBuilder.push('<page-module>');
+    if (this.enableInspector) {
+      partialBuilder.push(`
+        <page-module-inspector partial="${partial.partial}"></page-module-inspector>
+      `);
+    }
     const context = {...this.context, partial};
     partialBuilder.push(await engine.render(partialFile, context));
+    partialBuilder.push('</page-module>');
     return partialBuilder.join('\n');
   }
 
@@ -467,7 +492,9 @@ export class PageBuilder {
       return '';
     }
     if (!url) {
-      throw new Error(`Resource ${resource} has no URL. Does it exist and is it mapped in \`staticRoutes\`?`);
+      throw new Error(
+        `Resource ${resource} has no URL. Does it exist and is it mapped in \`staticRoutes\`?`
+      );
     }
     this.resourceUrls.push(url);
     return `
@@ -488,7 +515,9 @@ export class PageBuilder {
       return '';
     }
     if (!url) {
-      throw new Error(`Resource ${resource} has no URL. Does it exist and is it mapped in \`staticRoutes\`?`);
+      throw new Error(
+        `Resource ${resource} has no URL. Does it exist and is it mapped in \`staticRoutes\`?`
+      );
     }
     this.resourceUrls.push(url);
     return `

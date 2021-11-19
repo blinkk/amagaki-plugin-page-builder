@@ -29,11 +29,16 @@ test('PageBuilder', async (t: ExecutionContext) => {
 
 <body>
   <div class="main">
-    <div class="header">
-    </div>
-    <div class="hero">
-      <h1>Hello World!</h1>
-    </div>
+    <page-module>
+      <div class="header">
+        <p>Header</p>
+      </div>
+    </page-module>
+    <page-module>
+      <div class="hero">
+        <h1>Hello World!</h1>
+      </div>
+    </page-module>
   </div>
 </body>
 

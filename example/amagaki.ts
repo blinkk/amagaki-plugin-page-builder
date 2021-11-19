@@ -1,8 +1,12 @@
-import {PageBuilder} from '../dist';
+import {PageBuilder} from '../dist/';
 import {Pod} from '@amagaki/amagaki';
 
 export default async (pod: Pod) => {
   pod.configure({
+    environments: {
+      staging: {},
+      prod: {},
+    },
     staticRoutes: [
       {
         path: `/static/`,
