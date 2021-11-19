@@ -50,10 +50,12 @@ export class PageBuilderInspector extends LitElement {
           border-bottom-right-radius: 5px;
           color: #fff;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
-          font-size: 10px;
+          font-size: 12px;
           font-weight: 500;
-          padding: 5px 8px;
+          line-height: 12px;
+          padding: 8px 12px;
           position: absolute;
+          z-index: 999;
         }
         .help-box__label {
           cursor: default;

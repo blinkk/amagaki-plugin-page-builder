@@ -9,7 +9,7 @@
   "engines": {
     "node": ">=14"
   },
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "./dist/index.js",
   "scripts": {
     "check": "gts check",

@@ -1,3 +1,5 @@
 partials:
 - partial: hero
-  title: Hello World!
+  title: Hello World 1!
+- partial: hero
+  title: Hello World 2!

@@ -214,11 +214,13 @@ export class PageBuilder {
               ? ''
               : await this.buildBuiltinPartial('header')
           }
-          ${await Promise.all(
-            (partials ?? []).map((partial: Partial) =>
-              this.buildPartialElement(partial)
+          ${(
+            await Promise.all(
+              ((partials as any[]) ?? []).map((partial: Partial) =>
+                this.buildPartialElement(partial)
+              )
             )
-          )}
+          ).join('\n')}
           ${
             this.doc.fields.footer === false
               ? ''
@@ -246,7 +248,7 @@ export class PageBuilder {
     if (item?.url) {
       url = options?.includeDomain ? item.url.toString() : item.url.path;
     }
-    return fingerprint && !url.includes('?')
+    return fingerprint && !url?.includes('?')
       ? `${url}?fingerprint=${fingerprint}`
       : url;
   }
