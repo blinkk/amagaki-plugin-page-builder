@@ -210,7 +210,7 @@ export class PageBuilder {
         }
         <div class="main">
           ${
-            this.doc.fields.header === false
+            this.getFieldValue('header') === false
               ? ''
               : await this.buildBuiltinPartial('header')
           }
@@ -222,7 +222,7 @@ export class PageBuilder {
             )
           ).join('\n')}
           ${
-            this.doc.fields.footer === false
+            this.getFieldValue('footer') === false
               ? ''
               : await this.buildBuiltinPartial('footer')
           }
