@@ -45,12 +45,16 @@ interface GetUrlOptions {
   includeDomain?: boolean;
 }
 
+/** Options for the inspector UI. */
 interface InspectorOptions {
+  /** Whether the inspector is enabled. If unset, the inspector is enabled in staging and dev modes only and completely absent from prod. */
   enabled: boolean;
 }
 
 interface PageBuilderOptions {
   inspector?: InspectorOptions;
+
+  /** Whether to beautify HTML output. */
   beautify?: boolean;
   footer?: BuiltinPartial;
   header?: BuiltinPartial;
