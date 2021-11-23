@@ -11,6 +11,7 @@ import {
 } from '@amagaki/amagaki';
 
 import {PageBuilderStaticRouteProvider} from './router';
+import {PartialPreviewRouteProvider} from './partial-preview';
 import {SitemapPlugin} from './sitemap';
 import jsBeautify from 'js-beautify';
 
@@ -170,6 +171,7 @@ export class PageBuilder {
       robotsTxtPath: options?.robotsTxt?.path,
       sitemapPath: options?.sitemapXml?.path,
     });
+    PartialPreviewRouteProvider.register(pod);
     PageBuilderStaticRouteProvider.register(pod);
     pod.defaultView = async (context: TemplateContext) => {
       return await PageBuilder.build(context.doc, context, options);
@@ -340,11 +342,18 @@ export class PageBuilder {
   }
 
   buildHreflangLinkElements() {
+    // Documents created by the preview gallery may not have URLs. Check for
+    // URLs prior to outputting link tags.
+    const defaultUrl = this.getUrl(
+      this.pod.doc(this.doc.podPath, this.doc.defaultLocale).url
+    );
     return `
-      <link href="${this.doc.url}" rel="canonical">
-      <link href="${this.getUrl(
-        this.pod.doc(this.doc.podPath, this.doc.defaultLocale).url
-      )}" hreflang="x-default" rel="alternate">
+      ${this.doc.url ? `<link href="${this.doc.url}" rel="canonical">` : ''}
+      ${
+        defaultUrl
+          ? `<link href="${defaultUrl}" hreflang="x-default" rel="alternate">`
+          : ''
+      }
       ${[...this.doc.locales]
         .filter(locale => {
           return locale !== this.doc.defaultLocale;
