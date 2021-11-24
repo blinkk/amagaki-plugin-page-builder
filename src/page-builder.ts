@@ -58,7 +58,7 @@ interface InspectorOptions {
   enabled: boolean;
 }
 
-interface PageBuilderOptions {
+export interface PageBuilderOptions {
   inspector?: InspectorOptions;
 
   /** Whether to beautify HTML output. */
@@ -182,7 +182,9 @@ export class PageBuilder {
       sitemapPath: options?.sitemapXml?.path,
     });
     if (PageBuilder.isInspectorEnabled(pod, options)) {
-      PartialPreviewRouteProvider.register(pod);
+      PartialPreviewRouteProvider.register(pod, {
+        pageBuilderOptions: options || {}
+      });
       PageBuilderStaticRouteProvider.register(pod);
     }
     pod.defaultView = async (context: TemplateContext) => {

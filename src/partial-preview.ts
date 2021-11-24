@@ -6,13 +6,16 @@ import {
   RouteProvider,
   Router,
   TemplateContext,
+  Url,
   splitFrontMatter,
 } from '@amagaki/amagaki';
+import {PageBuilder, PageBuilderOptions} from './page-builder';
 
-import {PageBuilder} from './page-builder';
 import path from 'path';
 
-interface PartialPreviewRouteProviderOptions {}
+interface PartialPreviewRouteProviderOptions {
+  pageBuilderOptions: PageBuilderOptions;
+}
 
 interface Partial {
   basename: string;
@@ -20,12 +23,9 @@ interface Partial {
   podPath: string;
 }
 
-interface PartialPreviewRouteOptions {
-  partial: Partial;
-}
-
 interface PartialGalleryRouteOptions {
   partials: Partial[];
+  pageBuilderOptions: PageBuilderOptions;
 }
 
 export class PartialPreviewRouteProvider extends RouteProvider {
@@ -37,8 +37,8 @@ export class PartialPreviewRouteProvider extends RouteProvider {
     this.options = options;
   }
 
-  static register(pod: Pod, options?: PartialPreviewRouteProviderOptions) {
-    const provider = new PartialPreviewRouteProvider(pod.router, options ?? {});
+  static register(pod: Pod, options: PartialPreviewRouteProviderOptions) {
+    const provider = new PartialPreviewRouteProvider(pod.router, options);
     pod.router.addProvider(provider);
     return provider;
   }
@@ -54,7 +54,10 @@ export class PartialPreviewRouteProvider extends RouteProvider {
         basename: filename,
       };
     });
-    routes.push(new PartialGalleryRoute(this, {partials: partials}));
+    routes.push(new PartialGalleryRoute(this, {
+      partials: partials,
+      pageBuilderOptions: this.options.pageBuilderOptions,
+    }));
     return routes;
   }
 }
@@ -89,6 +92,7 @@ class PartialGalleryRoute extends Route {
       },
     ];
     const fakeDoc = {
+      constructor: {name: 'Document'},
       pod: this.provider.pod,
       podPath: '',
       locales: [],
@@ -98,12 +102,10 @@ class PartialGalleryRoute extends Route {
       },
       defaultLocale: this.pod.locale('en'),
       locale: this.pod.locale('en'),
-      url: {
+      url: new Url({
         path: this.urlPath,
-        toString: () => {
-          return '';
-        },
-      },
+        env: this.pod.env,
+      }),
     } as unknown as Document; 
     const context: TemplateContext = {
       doc: fakeDoc,
@@ -111,7 +113,7 @@ class PartialGalleryRoute extends Route {
       pod: this.provider.pod,
       process: process,
     };
-    const builder = new PageBuilder(fakeDoc, context, {});
+    const builder = new PageBuilder(fakeDoc, context, this.options.pageBuilderOptions);
     return await builder.buildDocument();
   }
 }
