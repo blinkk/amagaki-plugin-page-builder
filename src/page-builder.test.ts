@@ -56,9 +56,8 @@ test('PageBuilder', async (t: ExecutionContext) => {
 });
 
 test('PageBuilder dev', async (t: ExecutionContext) => {
-  const pod = new Pod('./example');
+  const pod = new Pod('./example', {dev: true, name: 'test'});
   await pod.router.warmup();
-  pod.env.dev = true;
   const html = await (await pod.router.resolve('/pages/') as Route).build();
   const expected = `
 <!DOCTYPE html>

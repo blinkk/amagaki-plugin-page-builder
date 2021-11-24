@@ -4,6 +4,10 @@ import {exec} from 'child_process';
 import gulp from 'gulp';
 
 const ENTRIES = {
+  templates: {
+    watch: ['./src/**/*.njk'],
+    out: './dist/'
+  },
   js: {
     // File location for tsc output.  Based on tsconfig output settings.
     tsc_out: ['./dist/ui/page-builder-ui.js'],
@@ -51,6 +55,15 @@ gulp.task('watch:js', async cb => {
   });
 });
 
-gulp.task('watch', gulp.parallel('watch:js'));
-gulp.task('build', gulp.parallel('build:js'));
+gulp.task('watch:templates', () => {
+  return gulp.watch(ENTRIES.templates.watch, gulp.series('build:templates'));
+});
+
+gulp.task('build:templates', async () => {
+  return gulp.src(ENTRIES.templates.watch)
+    .pipe(gulp.dest(ENTRIES.templates.out));
+})
+
+gulp.task('watch', gulp.parallel('watch:js', 'watch:templates'));
+gulp.task('build', gulp.parallel('build:js', 'build:templates'));
 gulp.task('default', gulp.series('watch'));
