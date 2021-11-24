@@ -22,8 +22,8 @@ test('PageBuilder', async (t: ExecutionContext) => {
   <link href="http://localhost/pages/" rel="canonical">
   <link href="http://localhost/pages/" hreflang="x-default" rel="alternate">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&display=swap" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link href="/static/css/main.css" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <script src="/static/js/main.js">
+  <link href="./../static/css/main.css?fingerprint=d41d8cd98f00b204e9800998ecf8427e" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <script src="./../static/js/main.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e">
   </script>
 </head>
 
@@ -34,8 +34,8 @@ test('PageBuilder', async (t: ExecutionContext) => {
         <p>Header</p>
       </div>
     </page-module>
-    <link href="/static/css/partials/hero.css" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <script src="/static/js/partials/hero.js">
+    <link href="./../static/css/partials/hero.css?fingerprint=d41d8cd98f00b204e9800998ecf8427e" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <script src="./../static/js/partials/hero.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e">
     </script>
     <page-module>
       <div class="hero">
@@ -75,10 +75,10 @@ test('PageBuilder dev', async (t: ExecutionContext) => {
   <link href="http://localhost/pages/" rel="canonical">
   <link href="http://localhost/pages/" hreflang="x-default" rel="alternate">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&display=swap" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link href="/static/css/main.css" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <script src="/static/js/main.js">
+  <link href="./../static/css/main.css?fingerprint=d41d8cd98f00b204e9800998ecf8427e" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <script src="./../static/js/main.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e">
   </script>
-  <script src="/_page-builder/page-builder-ui.min.js">
+  <script src="./../_page-builder/page-builder-ui.min.js">
   </script>
 </head>
 
@@ -90,8 +90,8 @@ test('PageBuilder dev', async (t: ExecutionContext) => {
         <p>Header</p>
       </div>
     </page-module>
-    <link href="/static/css/partials/hero.css" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <script src="/static/js/partials/hero.js">
+    <link href="./../static/css/partials/hero.css?fingerprint=d41d8cd98f00b204e9800998ecf8427e" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <script src="./../static/js/partials/hero.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e">
     </script>
     <page-module>
       <page-module-inspector partial="hero"></page-module-inspector>

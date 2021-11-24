@@ -44,6 +44,11 @@ type Resource = StaticFile | string | ResourceLoader;
 
 interface GetUrlOptions {
   includeDomain?: boolean;
+  relative?: boolean;
+}
+
+interface GetHrefFromResourceOptions {
+  includeFingerprint?: boolean;
 }
 
 /** Options for the inspector UI. */
@@ -254,6 +259,9 @@ export class PageBuilder {
     if (item?.url) {
       url = options?.includeDomain ? item.url.toString() : item.url.path;
     }
+    if (options?.relative && url) {
+      url = Url.relative(url, this.context.doc);
+    }
     return fingerprint && !url?.includes('?')
       ? `${url}?fingerprint=${fingerprint}`
       : url;
@@ -270,7 +278,7 @@ export class PageBuilder {
       ? await this.buildPartialElement({
           ...{partial: partial},
           ...(this.pod.fileExists(contentPodPath)
-            ? this.pod.readYaml(contentPodPath)
+            ? this.pod.doc(contentPodPath, this.context.doc.locale).fields
             : {}),
         })
       : '';
@@ -371,7 +379,7 @@ export class PageBuilder {
     return `
       ${
         options.icon
-          ? `<link rel="icon" href="${this.getUrl(options.icon)}">`
+          ? `<link rel="icon" href="${this.getUrl(options.icon, {relative: true})}">`
           : ''
       }
     `.trim();
@@ -489,9 +497,14 @@ export class PageBuilder {
     return partialBuilder.join('\n');
   }
 
-  getHrefFromResource(resource: Resource) {
+  getHrefFromResource(resource: Resource, options?: GetHrefFromResourceOptions) {
     if (DataType.isStaticFile(resource)) {
-      return (resource as StaticFile).url?.path;
+      resource = resource as StaticFile;
+      let href = resource.url?.path;
+      if (options?.includeFingerprint !== false && !href?.includes('?')) {
+        href = `${href}?fingerprint=${resource.fingerprint}`;
+      }
+      return href;
     } else if ((resource as ResourceLoader)?.href) {
       return (resource as ResourceLoader).href;
     }
@@ -501,7 +514,7 @@ export class PageBuilder {
 
   buildScriptElement(resource: Resource, defer = false, async = false) {
     const href = this.getHrefFromResource(resource);
-    const url = this.getUrl(href);
+    const url = this.getUrl(href, {relative: true});
     // Resource has already been loaded, don't build again.
     if (this.resourceUrls.includes(url)) {
       return '';
@@ -524,7 +537,7 @@ export class PageBuilder {
 
   buildStyleLinkElement(resource: Resource, async = true) {
     const href = this.getHrefFromResource(resource);
-    const url = this.getUrl(href);
+    const url = this.getUrl(href, {relative: true});
     // Resource has already been loaded, don't build again.
     if (this.resourceUrls.includes(url)) {
       return '';
