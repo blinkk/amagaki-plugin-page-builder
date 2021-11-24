@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.1.0...v1.1.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* relative URLs on preview gallery ([77b6851](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/77b6851f4adcd88718accc8269e0533415fc7755))
+
 ## [1.1.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.0.0...v1.1.0) (2021-11-24)
 
 
