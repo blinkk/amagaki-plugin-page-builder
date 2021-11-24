@@ -54,8 +54,7 @@ export class PageBuilderInspector extends LitElement {
           font-weight: 500;
           line-height: 12px;
           padding: 8px 12px;
-          position: sticky;
-          top: 0;
+          position: absolute;
           z-index: 999;
         }
         .help-box__label {
