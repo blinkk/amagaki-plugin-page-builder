@@ -29,7 +29,7 @@
       "ts"
     ],
     "files": [
-      "src/*.test.ts"
+      "src/**/*.test.ts"
     ],
     "timeout": "20s"
   },
