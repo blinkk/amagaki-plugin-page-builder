@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.2](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.1.1...v1.1.2) (2021-11-24)
+
+
+### Bug Fixes
+
+* inspector label positioning ([34c20c2](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/34c20c235ff0958bc59ba4408d30cd97e421828f))
+
 ### [1.1.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.1.0...v1.1.1) (2021-11-24)
 
 
