@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.0.0...v1.1.0) (2021-11-24)
+
+
+### Features
+
+* add barebones preview gallery ([7969883](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/7969883c2b0735b6f2f23a012344274f20260b40))
+* add preview gallery ([610203a](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/610203ae55c35f6f9caa166e0487a886db048579))
+* use fingerprints and relative urls by default ([9150684](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/9150684564a35973545778b98e2ff2c8ddab99d6))
+
 ## 1.0.0 (2021-11-22)
 
 
