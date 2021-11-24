@@ -13,6 +13,7 @@ import {
 import {PageBuilderStaticRouteProvider} from './router';
 import {PartialPreviewRouteProvider} from './partial-preview';
 import {SitemapPlugin} from './sitemap';
+import fs from 'fs';
 import jsBeautify from 'js-beautify';
 
 type Partial = any;
@@ -467,10 +468,16 @@ export class PageBuilder {
   }
 
   async buildPartialElement(partial: Partial) {
+    // Support both:
+    // 1. {partial: 'foo', ...}
+    // 2. {partial: {partial: 'foo', absolutePath: '/Users/foo/.../foo.njk'}, ...}
+    const name = typeof partial.partial === 'string' ? partial.partial : partial.partial?.partial;
     const [cssFile, jsFile] = [this.partialPaths.css, this.partialPaths.js].map(
       pathFormat => {
         return this.pod.staticFile(
-          interpolate(this.pod, pathFormat, {partial: partial})
+          interpolate(this.pod, pathFormat, {partial: {
+            partial: name
+          }})
         );
       }
     );
@@ -478,21 +485,28 @@ export class PageBuilder {
     // Load resources required by partial module.
     cssFile.exists && partialBuilder.push(this.buildStyleLinkElement(cssFile));
     jsFile.exists && partialBuilder.push(this.buildScriptElement(jsFile));
-    // TODO: Handle error when partial doesn't exist.
-    const partialFile = interpolate(this.pod, this.partialPaths.view, {
-      partial: partial,
-    });
     const engine = this.pod.engines.getEngineByFilename(
       this.partialPaths.view
     ) as TemplateEngineComponent;
     partialBuilder.push('<page-module>');
-    if (this.enableInspector) {
+    if (this.enableInspector && partial.partial?.includeInspector !== false) {
       partialBuilder.push(`
-        <page-module-inspector partial="${partial.partial}"></page-module-inspector>
+        <page-module-inspector partial="${name}"></page-module-inspector>
       `);
     }
     const context = {...this.context, partial};
-    partialBuilder.push(await engine.render(partialFile, context));
+    let html;
+    // TODO: Handle error when partial doesn't exist.
+    if (typeof partial.partial === 'string') {
+      const partialFile = interpolate(this.pod, this.partialPaths.view, {
+        partial: partial,
+      });
+      html = await engine.render(partialFile, context);
+    } else if (partial.partial?.absolutePath) {
+      const template = fs.readFileSync(partial.partial?.absolutePath, 'utf8')
+      html = await engine.renderFromString(template, context);
+    }
+    partialBuilder.push(html);
     partialBuilder.push('</page-module>');
     return partialBuilder.join('\n');
   }

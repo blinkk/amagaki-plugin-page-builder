@@ -14,7 +14,7 @@
   "scripts": {
     "check": "gts check",
     "clean": "gts clean",
-    "compile": "tsc; npx gulp build",
+    "compile": "tsc; npx gulp build;",
     "dev:start": "npm run compile",
     "dev": "nodemon --watch src -e ts --exec npm run dev:start",
     "fix": "node ./node_modules/eslint/bin/eslint --fix src/**/*.ts",

@@ -55,13 +55,6 @@ export class PartialPreviewRouteProvider extends RouteProvider {
       };
     });
     routes.push(new PartialGalleryRoute(this, {partials: partials}));
-    // partials.forEach(partial => {
-    //   routes.push(
-    //     new PartialPreviewRoute(this, {
-    //       partial: partial,
-    //     })
-    //   );
-    // });
     return routes;
   }
 }
@@ -84,11 +77,15 @@ class PartialGalleryRoute extends Route {
   }
 
   async build() {
-    const partial = path.join(__dirname, 'partial-preview-gallery.njk');
+    const partial = path.join(__dirname, 'ui', 'partial-preview-gallery.njk');
     const partials: Record<string, any>[] = [
       {
-        partial: 'partial',
-        // partials: this.options.partials,
+        partial: {
+          partial: 'partial-preview-gallery',
+          includeInspector: false,
+          absolutePath: partial,
+        },
+        partials: this.pod.walk('/views/partials/')
       },
     ];
     const fakeDoc = {
@@ -116,62 +113,5 @@ class PartialGalleryRoute extends Route {
     };
     const builder = new PageBuilder(fakeDoc, context, {});
     return await builder.buildDocument();
-  }
-}
-
-class PartialPreviewRoute extends Route {
-  options: PartialPreviewRouteOptions;
-
-  constructor(provider: RouteProvider, options: PartialPreviewRouteOptions) {
-    super(provider);
-    this.provider = provider;
-    this.options = options;
-  }
-  get path() {
-    return this.urlPath;
-  }
-  get urlPath() {
-    return `/preview/${this.options.partial.name}/`;
-  }
-  async build() {
-    const {frontMatter} = splitFrontMatter(
-      this.provider.pod.readFile(this.options.partial.podPath)
-    );
-    const mockData =
-      (frontMatter && this.pod.readYamlString(frontMatter)) || {};
-    const mocks = mockData?.mocks || {};
-    const partials = [];
-    partials.push({
-      partial: 'preview-spacer',
-    });
-    for (const [mockName, mockData] of Object.entries(mocks)) {
-      const mock = {
-        partial: this.options.partial.name,
-      };
-      partials.push(Object.assign(mock, mockData));
-      partials.push({
-        partial: 'preview-spacer',
-      });
-    }
-    const fakeDoc = {
-      fields: {
-        title: `${this.options.partial.name} – Preview`,
-        partials: partials,
-      },
-      locale: this.pod.locale('en'),
-      url: {
-        path: this.urlPath,
-      },
-    };
-    const template = '/views/base.njk';
-    const engine = this.provider.pod.engines.getEngineByFilename(
-      template
-    ) as NunjucksTemplateEngine;
-    return await engine.render(template, {
-      doc: fakeDoc,
-      env: this.provider.pod.env,
-      pod: this.provider.pod,
-      process: process,
-    });
   }
 }
