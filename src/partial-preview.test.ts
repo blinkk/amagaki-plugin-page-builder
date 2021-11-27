@@ -23,7 +23,7 @@ test('PatialPreview', async (t: ExecutionContext) => {
   <meta property="twitter:title" content="Preview Gallery">
   <meta property="twitter:card" content="summary_large_image">
   <link href="http://localhost/preview/" rel="canonical">
-  <link href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&display=swap" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&amp;display=swap" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link href="./../static/css/main.css?fingerprint=d41d8cd98f00b204e9800998ecf8427e" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <script src="./../static/js/main.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e">
   </script>

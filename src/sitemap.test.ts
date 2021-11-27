@@ -26,7 +26,6 @@ test('SitemapPlugin: sitemap.xml', async (t: ExecutionContext) => {
   t.deepEqual(sitemapContent, sitemapExpected);
 });
 
-
 test('SitemapPlugin: robots.txt', async (t: ExecutionContext) => {
   const pod = new Pod('./example');
   await pod.router.warmup();
