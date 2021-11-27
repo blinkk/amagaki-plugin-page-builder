@@ -9,6 +9,7 @@ import {
   Url,
   interpolate,
 } from '@amagaki/amagaki';
+import {SafeString, html} from './utils';
 
 import {PageBuilderStaticRouteProvider} from './router';
 import {PartialPreviewRouteProvider} from './partial-preview';
@@ -207,16 +208,16 @@ export class PageBuilder {
         typeof this.options.body?.class === 'function'
           ? await this.options.body?.class(this.context)
           : this.options.body?.class;
-      return `<body class="${className}">`;
+      return html`<body class="${className}">`;
     } else {
-      return '<body>';
+      return html`<body>`;
     }
   }
 
   async buildDocument() {
     const partials =
       this.doc.fields.partials ?? this.doc.collection?.fields.partials;
-    let html = `
+    let result = html`
       <!DOCTYPE html>
       <html lang="${this.getHtmlLang(
         this.doc.locale
@@ -234,13 +235,13 @@ export class PageBuilder {
               ? ''
               : await this.buildBuiltinPartial('header')
           }
-          ${(
+          ${new SafeString((
             await Promise.all(
               ((partials as any[]) ?? []).map((partial: Partial) =>
                 this.buildPartialElement(partial)
               )
             )
-          ).join('\n')}
+          ).join('\n'))}
           ${
             this.getFieldValue('footer') === false
               ? ''
@@ -254,12 +255,13 @@ export class PageBuilder {
         }
       </body>
       </html>
-    `.trim();
+    `;
+    let text = result.toString();
     if (this.options.beautify === false) {
-      return html;
+      return text;
     }
-    html = html.replace(/^\s*\n/gm, '');
-    return jsBeautify.html(html, {indent_size: 2});
+    text = text.replace(/^\s*\n/gm, '');
+    return jsBeautify.html(text, {indent_size: 2});
   }
 
   getUrl(item: any, options?: GetUrlOptions) {
@@ -294,7 +296,7 @@ export class PageBuilder {
   }
 
   async buildHeadElement() {
-    return `
+    return html`
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -317,22 +319,22 @@ export class PageBuilder {
         ${this.buildHeadLinkElements({
           icon: this.getFieldValue('icon') ?? this.options.head?.icon,
         })}
-        ${
+        ${new SafeString(
           this.options.head?.stylesheets
             ?.map(style => this.buildStyleLinkElement(style))
             .join('\n') ?? ''
-        }
-        ${
+        )}
+        ${new SafeString(
           this.options.head?.scripts
             ?.map(script => this.buildScriptElement(script))
             .join('\n') ?? ''
-        }
+        )}
         ${
           this.options.head?.extra
             ? await this.buildExtraElements(this.options.head.extra)
             : ''
         }
-        ${
+        ${new SafeString(
           this.enableInspector
             ? PageBuilderStaticRouteProvider.files
                 .map(path =>
@@ -342,9 +344,9 @@ export class PageBuilder {
                 )
                 .join('\n')
             : ''
-        }
+        )}
       </head>
-    `.trim();
+    `;
   }
 
   async buildExtraElements(extra: string[]) {
@@ -364,11 +366,11 @@ export class PageBuilder {
     const defaultUrl = this.getUrl(
       this.pod.doc(this.doc.podPath, this.doc.defaultLocale).url
     );
-    return `
-      ${this.doc.url ? `<link href="${this.doc.url}" rel="canonical">` : ''}
+    return html`
+      ${this.doc.url ? html`<link href="${this.doc.url}" rel="canonical">` : ''}
       ${
         defaultUrl
-          ? `<link href="${defaultUrl}" hreflang="x-default" rel="alternate">`
+          ? html`<link href="${defaultUrl}" hreflang="x-default" rel="alternate">`
           : ''
       }
       ${[...this.doc.locales]
@@ -376,24 +378,24 @@ export class PageBuilder {
           return locale !== this.doc.defaultLocale;
         })
         .map(locale => {
-          return `<link href="${this.getUrl(
+          return html`<link href="${this.getUrl(
             this.pod.doc(this.doc.podPath, locale).url
           )}" hreflang="${this.getHtmlLang(locale)}" rel="alternate">`;
         })
         .join('\n')}
-    `.trim();
+    `;
   }
 
   buildHeadLinkElements(options: {icon: string}) {
-    return `
+    return html`
       ${
         options.icon
-          ? `<link rel="icon" href="${this.getUrl(options.icon, {
+          ? html`<link rel="icon" href="${this.getUrl(options.icon, {
               relative: true,
             })}">`
           : ''
       }
-    `.trim();
+    `;
   }
 
   buildHeadMetaElements(options: {
@@ -407,74 +409,74 @@ export class PageBuilder {
     url: string;
     noIndex?: boolean;
   }) {
-    return `
-      ${options.title ? `<title>${options.title}</title>` : ''}
+    return html`
+      ${options.title ? html`<title>${options.title}</title>` : ''}
       ${
         options.description
-          ? `<meta name="description" content="${options.description}">`
+          ? html`<meta name="description" content="${options.description}">`
           : ''
       }
       ${
         options.themeColor
-          ? `<meta name="theme-color" content="${options.themeColor}">`
+          ? html`<meta name="theme-color" content="${options.themeColor}">`
           : ''
       }
-      ${options.noIndex ? `<meta name="robots" content="noindex">` : ''}
+      ${options.noIndex ? html`<meta name="robots" content="noindex">` : ''}
       <meta name="referrer" content="no-referrer">
       <meta property="og:type" content="website">
       ${
         options.siteName
-          ? `<meta property="og:site_name" content="${options.siteName}">`
+          ? html`<meta property="og:site_name" content="${options.siteName}">`
           : ''
       }
       <meta property="og:url" content="${options.url}">
       ${
         options.title
-          ? `<meta property="og:title" content="${options.title}">`
+          ? html`<meta property="og:title" content="${options.title}">`
           : ''
       }
       ${
         options.description
-          ? `<meta property="og:description" content="${options.description}">`
+          ? html`<meta property="og:description" content="${options.description}">`
           : ''
       }
       ${
         options.image
-          ? `<meta property="og:image" content="${this.getUrl(options.image, {
+          ? html`<meta property="og:image" content="${this.getUrl(options.image, {
               includeDomain: true,
             })}">`
           : ''
       }
       ${
         options.locale
-          ? `<meta property="og:locale" content="${options.locale}">`
+          ? html`<meta property="og:locale" content="${options.locale}">`
           : ''
       }
       ${
         options.twitterSite
-          ? `<meta property="twitter:site" content="${options.twitterSite}">`
+          ? html`<meta property="twitter:site" content="${options.twitterSite}">`
           : ''
       }
       ${
         options.title
-          ? `<meta property="twitter:title" content="${options.title}">`
+          ? html`<meta property="twitter:title" content="${options.title}">`
           : ''
       }
       ${
         options.description
-          ? `<meta property="twitter:description" content="${options.description}">`
+          ? html`<meta property="twitter:description" content="${options.description}">`
           : ''
       }
       ${
         options.image
-          ? `<meta property="twitter:image" content="${this.getUrl(
+          ? html`<meta property="twitter:image" content="${this.getUrl(
               options.image,
               {includeDomain: true}
             )}">`
           : ''
       }
       <meta property="twitter:card" content="summary_large_image">
-    `.trim();
+    `;
   }
 
   async buildPartialElement(partial: Partial) {
@@ -505,25 +507,25 @@ export class PageBuilder {
     ) as TemplateEngineComponent;
     partialBuilder.push('<page-module>');
     if (this.enableInspector && partial.partial?.includeInspector !== false) {
-      partialBuilder.push(`
+      partialBuilder.push(html`
         <page-module-inspector partial="${name}"></page-module-inspector>
       `);
     }
     const context = {...this.context, partial};
-    let html;
+    let result;
     // TODO: Handle error when partial doesn't exist.
     if (typeof partial.partial === 'string') {
       const partialFile = interpolate(this.pod, this.partialPaths.view, {
         partial: partial,
       });
-      html = await engine.render(partialFile, context);
+      result = await engine.render(partialFile, context);
     } else if (partial.partial?.absolutePath) {
       const template = fs.readFileSync(partial.partial?.absolutePath, 'utf8');
-      html = await engine.renderFromString(template, context);
+      result = await engine.renderFromString(template, context);
     }
-    partialBuilder.push(html);
+    partialBuilder.push(result);
     partialBuilder.push('</page-module>');
-    return partialBuilder.join('\n');
+    return new SafeString(partialBuilder.join('\n'));
   }
 
   getHrefFromResource(
@@ -557,14 +559,14 @@ export class PageBuilder {
       );
     }
     this.resourceUrls.push(url);
-    return `
+    return html`
       <script
         src="${url}"
         ${defer ? 'defer' : ''}
         ${async ? 'async' : ''}
       >
       </script>
-    `.trim();
+    `;
   }
 
   buildStyleLinkElement(resource: Resource, async = true) {
@@ -580,13 +582,13 @@ export class PageBuilder {
       );
     }
     this.resourceUrls.push(url);
-    return `
+    return html`
       <link
         href="${url}"
         rel="stylesheet"
         ${
           async
-            ? `
+            ? html`
             rel="preload"
             as="style"
             onload="this.onload=null;this.rel='stylesheet'"
@@ -594,6 +596,6 @@ export class PageBuilder {
             : ''
         }
       >
-    `.trim();
+    `;
   }
 }
