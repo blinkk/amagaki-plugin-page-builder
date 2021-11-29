@@ -9,7 +9,7 @@ import {
   Url,
   interpolate,
 } from '@amagaki/amagaki';
-import {SafeString, html} from './utils';
+import {html, safeString} from './utils';
 
 import {PageBuilderStaticRouteProvider} from './router';
 import {PartialPreviewRouteProvider} from './partial-preview';
@@ -235,7 +235,7 @@ export class PageBuilder {
               ? ''
               : await this.buildBuiltinPartial('header')
           }
-          ${new SafeString((
+          ${safeString((
             await Promise.all(
               ((partials as any[]) ?? []).map((partial: Partial) =>
                 this.buildPartialElement(partial)
@@ -319,12 +319,12 @@ export class PageBuilder {
         ${this.buildHeadLinkElements({
           icon: this.getFieldValue('icon') ?? this.options.head?.icon,
         })}
-        ${new SafeString(
+        ${safeString(
           this.options.head?.stylesheets
             ?.map(style => this.buildStyleLinkElement(style))
             .join('\n') ?? ''
         )}
-        ${new SafeString(
+        ${safeString(
           this.options.head?.scripts
             ?.map(script => this.buildScriptElement(script))
             .join('\n') ?? ''
@@ -334,7 +334,7 @@ export class PageBuilder {
             ? await this.buildExtraElements(this.options.head.extra)
             : ''
         }
-        ${new SafeString(
+        ${safeString(
           this.enableInspector
             ? PageBuilderStaticRouteProvider.files
                 .map(path =>
@@ -525,7 +525,7 @@ export class PageBuilder {
     }
     partialBuilder.push(result);
     partialBuilder.push('</page-module>');
-    return new SafeString(partialBuilder.join('\n'));
+    return safeString(partialBuilder.join('\n'));
   }
 
   getHrefFromResource(
