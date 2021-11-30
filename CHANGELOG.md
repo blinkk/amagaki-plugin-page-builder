@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.2.0...v1.3.0) (2021-11-30)
+
+
+### Features
+
+* add landmark roles to page structure ([920a149](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/920a1496647d69397a7a9e55966ce6be9a4864b9))
+
 ## [1.2.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.1.2...v1.2.0) (2021-11-29)
 
 
