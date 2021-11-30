@@ -25,28 +25,30 @@ test('PatialPreview', async (t: ExecutionContext) => {
   <link href="http://localhost/preview/" rel="canonical">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&amp;display=swap" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link href="./../static/css/main.css?fingerprint=d41d8cd98f00b204e9800998ecf8427e" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <script src="./../static/js/main.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e">
-  </script>
-  <script src="./../_page-builder/page-builder-ui.min.js">
-  </script>
+  <script src="./../static/js/main.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e"></script>
+  <script src="./../_page-builder/page-builder-ui.min.js"></script>
 </head>
 
 <body>
   <div class="main">
-    <page-module>
-      <page-module-inspector partial="header"></page-module-inspector>
-      <div class="header">
-        <p>Header</p>
-      </div>
-    </page-module>
-    <page-module>
-      <div class="partial-preview-gallery">
-        <ul>
-          <li>/views/partials/header.njk
-          <li>/views/partials/hero.njk
-        </ul>
-      </div>
-    </page-module>
+    <header>
+      <page-module>
+        <page-module-inspector partial="header"></page-module-inspector>
+        <div class="header">
+          <p>Header</p>
+        </div>
+      </page-module>
+    </header>
+    <main>
+      <page-module>
+        <div class="partial-preview-gallery">
+          <ul>
+            <li>/views/partials/header.njk
+            <li>/views/partials/hero.njk
+          </ul>
+        </div>
+      </page-module>
+    </main>
   </div>
 </body>
 

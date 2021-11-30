@@ -154,7 +154,10 @@ export class PageBuilder {
     this.resourceUrls = [];
     this.context = context;
     this.options = options || {};
-    this.enableInspector = PageBuilder.isInspectorEnabled(this.pod, this.options);
+    this.enableInspector = PageBuilder.isInspectorEnabled(
+      this.pod,
+      this.options
+    );
     this.partialPaths = options?.partialPaths ?? {
       css: '/dist/css/partials/${partial.partial}.css',
       js: '/dist/js/partials/${partial.partial}.js',
@@ -184,7 +187,7 @@ export class PageBuilder {
     });
     if (PageBuilder.isInspectorEnabled(pod, options)) {
       PartialPreviewRouteProvider.register(pod, {
-        pageBuilderOptions: options || {}
+        pageBuilderOptions: options || {},
       });
       PageBuilderStaticRouteProvider.register(pod);
     }
@@ -235,13 +238,17 @@ export class PageBuilder {
               ? ''
               : await this.buildBuiltinPartial('header')
           }
-          ${safeString((
-            await Promise.all(
-              ((partials as any[]) ?? []).map((partial: Partial) =>
-                this.buildPartialElement(partial)
-              )
-            )
-          ).join('\n'))}
+          <main>
+            ${safeString(
+              (
+                await Promise.all(
+                  ((partials as any[]) ?? []).map((partial: Partial) =>
+                    this.buildPartialElement(partial)
+                  )
+                )
+              ).join('\n')
+            )}
+          </main>
           ${
             this.getFieldValue('footer') === false
               ? ''
@@ -286,13 +293,16 @@ export class PageBuilder {
     const contentPodPath = `/content/partials/${partial}.yaml`;
     const viewPodPath = `/views/partials/${partial}.njk`;
     return this.pod.fileExists(viewPodPath)
-      ? await this.buildPartialElement({
+      ? html`
+        <${partial}>
+        ${await this.buildPartialElement({
           ...{partial: partial},
           ...(this.pod.fileExists(contentPodPath)
             ? this.pod.doc(contentPodPath, this.context.doc.locale).fields
             : {}),
-        })
-      : '';
+        })}
+        </${partial}>
+      ` : '';
   }
 
   async buildHeadElement() {
@@ -329,11 +339,9 @@ export class PageBuilder {
             ?.map(script => this.buildScriptElement(script))
             .join('\n') ?? ''
         )}
-        ${
-          this.options.head?.extra
-            ? await this.buildExtraElements(this.options.head.extra)
-            : ''
-        }
+        ${this.options.head?.extra
+          ? await this.buildExtraElements(this.options.head.extra)
+          : ''}
         ${safeString(
           this.enableInspector
             ? PageBuilderStaticRouteProvider.files
@@ -367,20 +375,26 @@ export class PageBuilder {
       this.pod.doc(this.doc.podPath, this.doc.defaultLocale).url
     );
     return html`
-      ${this.doc.url ? html`<link href="${this.doc.url}" rel="canonical">` : ''}
-      ${
-        defaultUrl
-          ? html`<link href="${defaultUrl}" hreflang="x-default" rel="alternate">`
-          : ''
-      }
+      ${this.doc.url
+        ? html`<link href="${this.doc.url}" rel="canonical">`
+        : ''}
+      ${defaultUrl
+        ? html`<link
+            href="${defaultUrl}"
+            hreflang="x-default"
+            rel="alternate"
+          >`
+        : ''}
       ${[...this.doc.locales]
         .filter(locale => {
           return locale !== this.doc.defaultLocale;
         })
         .map(locale => {
-          return html`<link href="${this.getUrl(
-            this.pod.doc(this.doc.podPath, locale).url
-          )}" hreflang="${this.getHtmlLang(locale)}" rel="alternate">`;
+          return html`<link
+            href="${this.getUrl(this.pod.doc(this.doc.podPath, locale).url)}"
+            hreflang="${this.getHtmlLang(locale)}"
+            rel="alternate"
+          >`;
         })
         .join('\n')}
     `;
@@ -388,13 +402,14 @@ export class PageBuilder {
 
   buildHeadLinkElements(options: {icon: string}) {
     return html`
-      ${
-        options.icon
-          ? html`<link rel="icon" href="${this.getUrl(options.icon, {
+      ${options.icon
+        ? html`<link
+            rel="icon"
+            href="${this.getUrl(options.icon, {
               relative: true,
-            })}">`
-          : ''
-      }
+            })}"
+          >`
+        : ''}
     `;
   }
 
@@ -411,70 +426,60 @@ export class PageBuilder {
   }) {
     return html`
       ${options.title ? html`<title>${options.title}</title>` : ''}
-      ${
-        options.description
-          ? html`<meta name="description" content="${options.description}">`
-          : ''
-      }
-      ${
-        options.themeColor
-          ? html`<meta name="theme-color" content="${options.themeColor}">`
-          : ''
-      }
+      ${options.description
+        ? html`<meta name="description" content="${options.description}">`
+        : ''}
+      ${options.themeColor
+        ? html`<meta name="theme-color" content="${options.themeColor}">`
+        : ''}
       ${options.noIndex ? html`<meta name="robots" content="noindex">` : ''}
       <meta name="referrer" content="no-referrer">
       <meta property="og:type" content="website">
-      ${
-        options.siteName
-          ? html`<meta property="og:site_name" content="${options.siteName}">`
-          : ''
-      }
+      ${options.siteName
+        ? html`<meta property="og:site_name" content="${options.siteName}">`
+        : ''}
       <meta property="og:url" content="${options.url}">
-      ${
-        options.title
-          ? html`<meta property="og:title" content="${options.title}">`
-          : ''
-      }
-      ${
-        options.description
-          ? html`<meta property="og:description" content="${options.description}">`
-          : ''
-      }
-      ${
-        options.image
-          ? html`<meta property="og:image" content="${this.getUrl(options.image, {
+      ${options.title
+        ? html`<meta property="og:title" content="${options.title}">`
+        : ''}
+      ${options.description
+        ? html`<meta
+            property="og:description"
+            content="${options.description}"
+         >`
+        : ''}
+      ${options.image
+        ? html`<meta
+            property="og:image"
+            content="${this.getUrl(options.image, {
               includeDomain: true,
-            })}">`
-          : ''
-      }
-      ${
-        options.locale
-          ? html`<meta property="og:locale" content="${options.locale}">`
-          : ''
-      }
-      ${
-        options.twitterSite
-          ? html`<meta property="twitter:site" content="${options.twitterSite}">`
-          : ''
-      }
-      ${
-        options.title
-          ? html`<meta property="twitter:title" content="${options.title}">`
-          : ''
-      }
-      ${
-        options.description
-          ? html`<meta property="twitter:description" content="${options.description}">`
-          : ''
-      }
-      ${
-        options.image
-          ? html`<meta property="twitter:image" content="${this.getUrl(
-              options.image,
-              {includeDomain: true}
-            )}">`
-          : ''
-      }
+            })}"
+         >`
+        : ''}
+      ${options.locale
+        ? html`<meta property="og:locale" content="${options.locale}">`
+        : ''}
+      ${options.twitterSite
+        ? html`<meta
+            property="twitter:site"
+            content="${options.twitterSite}"
+         >`
+        : ''}
+      ${options.title
+        ? html`<meta property="twitter:title" content="${options.title}">`
+        : ''}
+      ${options.description
+        ? html`<meta
+            property="twitter:description"
+            content="${options.description}"
+         >`
+        : ''}
+      ${options.image
+        ? html`<meta
+            property="twitter:image"
+            content="${this.getUrl(options.image, {includeDomain: true})}"
+         >`
+        : ''}
       <meta property="twitter:card" content="summary_large_image">
     `;
   }
@@ -564,8 +569,7 @@ export class PageBuilder {
         src="${url}"
         ${defer ? 'defer' : ''}
         ${async ? 'async' : ''}
-      >
-      </script>
+      ></script>
     `;
   }
 
@@ -586,15 +590,12 @@ export class PageBuilder {
       <link
         href="${url}"
         rel="stylesheet"
-        ${
-          async
-            ? html`
-            rel="preload"
-            as="style"
-            onload="this.onload=null;this.rel='stylesheet'"
+        ${async
+          ? html`
+              rel="preload" as="style"
+              onload="this.onload=null;this.rel='stylesheet'"
             `
-            : ''
-        }
+          : ''}
       >
     `;
   }
