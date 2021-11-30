@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.1.2...v1.2.0) (2021-11-29)
+
+
+### Features
+
+* use html template tag to construct document ([#12](https://www.github.com/blinkk/amagaki-plugin-page-builder/issues/12)) ([16ceacb](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/16ceacbd2597f3fe7c0270b274a25730075ffe2e))
+
+
+### Bug Fixes
+
+* use Nunjucks and SafeString to construct document ([2387871](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/2387871b8ccef7a06b19159b3a2ad96fd2265695))
+
 ### [1.1.2](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.1.1...v1.1.2) (2021-11-24)
 
 
