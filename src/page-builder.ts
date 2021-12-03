@@ -194,6 +194,7 @@ export class PageBuilder {
     pod.defaultView = async (context: TemplateContext) => {
       return await PageBuilder.build(context.doc, context, options);
     };
+    return options;
   }
 
   /**

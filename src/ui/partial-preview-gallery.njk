@@ -1,7 +1,7 @@
 <div class="partial-preview-gallery">
   <ul>
-    {% for partial in partial.partials %}
-      <li>{{partial}}
+    {% for name in partial.partials %}
+      <li><a href="/preview/{{name}}/">{{name}}</a>
     {% endfor %}
   </ul>
 </div>

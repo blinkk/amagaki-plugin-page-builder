@@ -1,13 +1,11 @@
 import {
   Document,
-  NunjucksTemplateEngine,
   Pod,
   Route,
   RouteProvider,
   Router,
   TemplateContext,
   Url,
-  splitFrontMatter,
 } from '@amagaki/amagaki';
 import {PageBuilder, PageBuilderOptions} from './page-builder';
 
@@ -88,7 +86,9 @@ class PartialGalleryRoute extends Route {
           includeInspector: false,
           absolutePath: partial,
         },
-        partials: this.pod.walk('/views/partials/')
+        partials: this.pod.walk('/views/partials/').map(podPath => {
+          return path.basename(podPath).split('.')[0];
+        }),
       },
     ];
     const fakeDoc = {
