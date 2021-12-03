@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.3.0...v1.3.1) (2021-12-03)
+
+
+### Bug Fixes
+
+* links to module names in preview gallery ([ce8b0f5](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/ce8b0f50f31dbbd9bb3c6e8b490d235c40e65aad))
+
 ## [1.3.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.2.0...v1.3.0) (2021-11-30)
 
 
