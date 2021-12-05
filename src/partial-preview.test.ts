@@ -43,13 +43,14 @@ test('PatialPreview', async (t: ExecutionContext) => {
       <page-module>
         <div class="partial-preview-gallery">
           <ul>
-            <li>/views/partials/header.njk
-            <li>/views/partials/hero.njk
+            <li><a href="/preview/header/">header</a>
+            <li><a href="/preview/hero/">hero</a>
           </ul>
         </div>
       </page-module>
     </main>
   </div>
+  <page-inspector></page-inspector>
 </body>
 
 </html>

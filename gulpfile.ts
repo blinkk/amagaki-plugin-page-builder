@@ -64,6 +64,6 @@ gulp.task('build:templates', async () => {
     .pipe(gulp.dest(ENTRIES.templates.out));
 })
 
-gulp.task('watch', gulp.parallel('watch:js', 'watch:templates'));
 gulp.task('build', gulp.parallel('build:js', 'build:templates'));
+gulp.task('watch', gulp.parallel('build', 'watch:js', 'watch:templates'));
 gulp.task('default', gulp.series('watch'));

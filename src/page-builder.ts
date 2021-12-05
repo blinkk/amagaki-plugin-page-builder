@@ -261,6 +261,7 @@ export class PageBuilder {
             ? await this.buildExtraElements(this.options.body?.extra)
             : ''
         }
+        ${this.enableInspector ? html`<page-inspector></page-inspector>` : ''}
       </body>
       </html>
     `;

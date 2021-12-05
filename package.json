@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@amagaki/amagaki": "^1.7.0",
+    "@blinkk/degu": "^2.0.0",
     "@types/gulp": "^4.0.9",
     "@types/js-beautify": "^1.13.3",
     "@types/node": "^13.11.1",
