@@ -10,7 +10,7 @@ const ELEMENTS = [AttributeHighlighter, GridInspector, MarginOutliner];
 @customElement('page-inspector')
 export class PageInspector extends LitElement {
   @query('.page-inspector')
-  private root?: HTMLElement;
+  root?: HTMLElement;
 
   connectedCallback() {
     super.connectedCallback();
@@ -19,16 +19,36 @@ export class PageInspector extends LitElement {
         this.toggleShortcutHelper();
       }
     });
+    window.addEventListener('resize', () => {
+      this.requestUpdate();
+    }, {passive: true});
   }
 
   static get styles() {
     return css`
-      .page-inspector {
+      .page-inspector:not(.active) {
+        display: none;
+      }
+
+      .page-inspector__viewport {
+        background-color: white;
+        border-bottom-left-radius: 8px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        font-size: 12px;
+        line-height: 16px;
+        padding: 10px;
+        position: fixed;
+        right: 0;
+        top: 0;
+        z-index: 9999;
+      }
+
+      .page-inspector__shortcuts {
         background-color: white;
         border-radius: 8px;
         border: 1px solid #ccc;
         bottom: 15px;
-        display: none;
+        display: flex;
         flex-direction: column;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
         font-size: 12px;
@@ -40,15 +60,11 @@ export class PageInspector extends LitElement {
         z-index: 9999;
       }
 
-      .page-inspector.active {
+      .page-inspector__shortcuts__row {
         display: flex;
       }
 
-      .page-inspector__row {
-        display: flex;
-      }
-
-      .page-inspector__label {
+      .page-inspector__shortcuts__label {
         text-align: right;
         width: 45px;
         padding-right: 20px;
@@ -56,33 +72,39 @@ export class PageInspector extends LitElement {
     `;
   }
 
-  private toggleShortcutHelper() {
+  toggleShortcutHelper() {
     const activeClassName = 'active';
     this.root?.classList.toggle(activeClassName);
+  }
+
+  get aspect() {
+    return `${window.innerWidth}x${window.innerHeight}`;
   }
 
   render() {
     return html`
       <div class="page-inspector">
-        <div class="page-inspector__row">
-          <div class="page-inspector__label">Ctrl+G</div>
-          <div class="page-inspector__description">Toggle layout grids</div>
+        <div class="page-inspector__viewport">
+          Screen size ${this.aspect}
         </div>
-
-        <div class="page-inspector__row">
-          <div class="page-inspector__label">Ctrl+M</div>
-          <div class="page-inspector__description">Toggle internal margins</div>
+        <div class="page-inspector__shortcuts">
+          <div class="page-inspector__shortcuts__row">
+            <div class="page-inspector__shortcuts__label">Ctrl+G</div>
+            <div class="page-inspector__shortcuts__description">Toggle layout grids</div>
+          </div>
+          <div class="page-inspector__shortcuts__row">
+            <div class="page-inspector__shortcuts__label">Ctrl+M</div>
+            <div class="page-inspector__shortcuts__description">Toggle internal margins</div>
+          </div>
+          <div class="page-inspector__shortcuts__row">
+            <div class="page-inspector__shortcuts__label">Ctrl+A</div>
+            <div class="page-inspector__shortcuts__description">Toggle accessibility labels</div>
+          </div>
         </div>
-
-        <div class="page-inspector__row">
-          <div class="page-inspector__label">Ctrl+A</div>
-          <div class="page-inspector__description">Toggle accessibility labels</div>
-        </div>
+        <grid-inspector></grid-inspector>
+        <margin-outliner></margin-outliner>
+        <attribute-highlighter></attribute-highlighter>
       </div>
-
-      <grid-inspector></grid-inspector>
-      <margin-outliner></margin-outliner>
-      <attribute-highlighter></attribute-highlighter>
     `;
   }
 }

@@ -13,9 +13,9 @@ export class PageBuilderInspector extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     // Update after DOM is generated to update the module ID.
-    window.setTimeout(() => {
-      this.requestUpdate();
+    window.addEventListener('DOMContentLoaded', () => {
       this.addIdToPageModule();
+      this.requestUpdate();
     });
   }
 
