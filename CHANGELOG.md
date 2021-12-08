@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.3.1...v1.4.0) (2021-12-08)
+
+
+### Features
+
+* add preliminary page inspector ([8853068](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/8853068ea1b56f6493672004c1e033638c4603a6))
+* add screen size to shortcut overlay [#16](https://www.github.com/blinkk/amagaki-plugin-page-builder/issues/16) ([575f6d0](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/575f6d0d7606bb8497637aa533f5704c293d717c))
+
 ### [1.3.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.3.0...v1.3.1) (2021-12-03)
 
 
