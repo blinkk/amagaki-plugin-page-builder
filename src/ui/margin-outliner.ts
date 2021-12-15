@@ -38,7 +38,7 @@ export class MarginOutliner extends LitElement {
   private marginOutliner?: DeguMarginOutliner;
   private show = false;
 
-  static DEFAULT_MARGINS = [4, 8, 12, 16, 20, 24, 32, 40, 60, 80];
+  static DEFAULT_MARGINS = [4, 8, 10, 12, 16, 20, 24, 32, 40, 50, 60, 80, 120];
   static STORAGE_KEY = 'inspectorMargins';
 
   @property({type: Array, attribute: 'margins'})
