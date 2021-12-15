@@ -56,7 +56,10 @@ interface GetHrefFromResourceOptions {
 /** Options for the inspector UI. */
 interface InspectorOptions {
   /** Whether the inspector is enabled. If unset, the inspector is enabled in staging and dev modes only and completely absent from prod. */
-  enabled: boolean;
+  enabled?: boolean;
+
+  /** A list of sizes used by the margin inspector. The margin inspector highlights margins, simplifying visual QA. */
+  margins?: number[];
 }
 
 export interface PageBuilderOptions {
@@ -261,7 +264,12 @@ export class PageBuilder {
             ? await this.buildExtraElements(this.options.body?.extra)
             : ''
         }
-        ${this.enableInspector ? html`<page-inspector></page-inspector>` : ''}
+        ${this.enableInspector ?
+          html`
+            <page-inspector
+              ${this.options?.inspector?.margins ? html`margins="${JSON.stringify(this.options.inspector.margins)}"` : ''}
+            ></page-inspector>`
+          : ''}
       </body>
       </html>
     `;

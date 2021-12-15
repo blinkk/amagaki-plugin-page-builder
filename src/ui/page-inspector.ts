@@ -1,9 +1,10 @@
 import {LitElement, css, html} from 'lit';
-import {customElement, query} from 'lit/decorators.js';
+import {customElement, property, query} from 'lit/decorators.js';
 
 import { AttributeHighlighter } from './attribute-highlighter';
 import { GridInspector } from './grid-inspector';
 import { MarginOutliner } from './margin-outliner';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 const ELEMENTS = [AttributeHighlighter, GridInspector, MarginOutliner];
 
@@ -11,6 +12,9 @@ const ELEMENTS = [AttributeHighlighter, GridInspector, MarginOutliner];
 export class PageInspector extends LitElement {
   @query('.page-inspector')
   root?: HTMLElement;
+
+  @property({type: Array, attribute: 'margins'})
+  margins?: number[];
 
   connectedCallback() {
     super.connectedCallback();
@@ -26,14 +30,18 @@ export class PageInspector extends LitElement {
 
   static get styles() {
     return css`
-      .page-inspector:not(.active) {
+      :host {
+        --inspector-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+      }
+
+      .page-inspector:not(.active) .page-inspector__ui {
         display: none;
       }
 
-      .page-inspector__viewport {
+      .page-inspector__ui__viewport {
         background-color: white;
         border-bottom-left-radius: 8px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        font-family: var(--inspector-font-family);
         font-size: 12px;
         line-height: 16px;
         padding: 10px;
@@ -43,14 +51,14 @@ export class PageInspector extends LitElement {
         z-index: 9999;
       }
 
-      .page-inspector__shortcuts {
+      .page-inspector__ui__shortcuts {
         background-color: white;
         border-radius: 8px;
         border: 1px solid #ccc;
         bottom: 15px;
         display: flex;
         flex-direction: column;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        font-family: var(--inspector-font-family);
         font-size: 12px;
         line-height: 16px;
         font-weight: 500;
@@ -60,11 +68,11 @@ export class PageInspector extends LitElement {
         z-index: 9999;
       }
 
-      .page-inspector__shortcuts__row {
+      .page-inspector__ui__shortcuts__row {
         display: flex;
       }
 
-      .page-inspector__shortcuts__label {
+      .page-inspector__ui__shortcuts__label {
         text-align: right;
         width: 45px;
         padding-right: 20px;
@@ -84,25 +92,29 @@ export class PageInspector extends LitElement {
   render() {
     return html`
       <div class="page-inspector">
-        <div class="page-inspector__viewport">
-          Screen size ${this.aspect}
-        </div>
-        <div class="page-inspector__shortcuts">
-          <div class="page-inspector__shortcuts__row">
-            <div class="page-inspector__shortcuts__label">Ctrl+G</div>
-            <div class="page-inspector__shortcuts__description">Toggle layout grids</div>
+        <div class="page-inspector__ui">
+          <div class="page-inspector__ui__viewport">
+            Screen size ${this.aspect}
           </div>
-          <div class="page-inspector__shortcuts__row">
-            <div class="page-inspector__shortcuts__label">Ctrl+M</div>
-            <div class="page-inspector__shortcuts__description">Toggle internal margins</div>
-          </div>
-          <div class="page-inspector__shortcuts__row">
-            <div class="page-inspector__shortcuts__label">Ctrl+A</div>
-            <div class="page-inspector__shortcuts__description">Toggle accessibility labels</div>
+          <div class="page-inspector__ui__shortcuts">
+            <div class="page-inspector__ui__shortcuts__row">
+              <div class="page-inspector__ui__shortcuts__label">Ctrl+G</div>
+              <div class="page-inspector__ui__shortcuts__description">Toggle layout grids</div>
+            </div>
+            <div class="page-inspector__ui__shortcuts__row">
+              <div class="page-inspector__ui__shortcuts__label">Ctrl+M</div>
+              <div class="page-inspector__ui__shortcuts__description">Toggle internal margins</div>
+            </div>
+            <div class="page-inspector__ui__shortcuts__row">
+              <div class="page-inspector__ui__shortcuts__label">Ctrl+A</div>
+              <div class="page-inspector__ui__shortcuts__description">Toggle accessibility labels</div>
+            </div>
           </div>
         </div>
         <grid-inspector></grid-inspector>
-        <margin-outliner></margin-outliner>
+        <margin-outliner
+          margins="${ifDefined(this.margins ? JSON.stringify(this.margins) : undefined)}"
+        ></margin-outliner>
         <attribute-highlighter></attribute-highlighter>
       </div>
     `;
