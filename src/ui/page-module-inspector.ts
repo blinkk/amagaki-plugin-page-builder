@@ -39,7 +39,7 @@ export class PageBuilderInspector extends LitElement {
   }
 
   get elementId() {
-    return `m${this.moduleIndex}-${this.partial}`;
+    return `m${this.moduleIndex}`;
   }
 
   static get styles() {
