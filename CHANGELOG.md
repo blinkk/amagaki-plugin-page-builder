@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.4.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.4.0...v1.4.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* margin outline toggles ([83060a1](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/83060a1683aea2c04873ce82317db8ccb31daf66))
+* persist inspector states ([288046e](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/288046eca6d2d46a0909bf247fa85a5ad7d6da3b))
+
 ## [1.4.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.3.1...v1.4.0) (2021-12-08)
 
 
