@@ -16,13 +16,24 @@ export class PageInspector extends LitElement {
   @property({type: Array, attribute: 'margins'})
   margins?: number[];
 
+  static SHORTCUTS_STORAGE_KEY = 'inspectorShortcuts';
+
+  isShortcutsActive?: Boolean;
+
   connectedCallback() {
     super.connectedCallback();
+
+    // Set up shortcut helper.
     document.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === '?') {
         this.toggleShortcutHelper();
       }
     });
+    if (localStorage.getItem(PageInspector.SHORTCUTS_STORAGE_KEY)) {
+      this.toggleShortcutHelper();
+      console.log('enabling')
+    }
+
     window.addEventListener('resize', () => {
       this.requestUpdate();
     }, {passive: true});
@@ -81,8 +92,11 @@ export class PageInspector extends LitElement {
   }
 
   toggleShortcutHelper() {
-    const activeClassName = 'active';
-    this.root?.classList.toggle(activeClassName);
+    this.isShortcutsActive = !this.isShortcutsActive;
+    this.isShortcutsActive
+      ? localStorage.setItem(PageInspector.SHORTCUTS_STORAGE_KEY, 'true')
+      : localStorage.removeItem(PageInspector.SHORTCUTS_STORAGE_KEY);
+    this.requestUpdate();
   }
 
   get aspect() {
@@ -91,7 +105,7 @@ export class PageInspector extends LitElement {
 
   render() {
     return html`
-      <div class="page-inspector">
+      <div class="page-inspector ${this.isShortcutsActive ? 'active' : ''}">
         <div class="page-inspector__ui">
           <div class="page-inspector__ui__viewport">
             Screen size ${this.aspect}

@@ -39,6 +39,7 @@ export class MarginOutliner extends LitElement {
   private show = false;
 
   static DEFAULT_MARGINS = [4, 8, 12, 16, 20, 24, 32, 40, 60, 80];
+  static STORAGE_KEY = 'inspectorMargins';
 
   @property({type: Array, attribute: 'margins'})
   margins?: number[];
@@ -51,6 +52,9 @@ export class MarginOutliner extends LitElement {
         this.toggleMarginOutliner();
       }
     });
+    if (localStorage.getItem(MarginOutliner.STORAGE_KEY)) {
+      this.toggleMarginOutliner();
+    }
   }
 
   private toggleMarginOutliner() {
@@ -65,6 +69,7 @@ export class MarginOutliner extends LitElement {
     } else {
       this.marginOutliner?.dispose();
     }
+    this.show ? localStorage.setItem(MarginOutliner.STORAGE_KEY, 'true') : localStorage.removeItem(MarginOutliner.STORAGE_KEY);
   }
 
   createRenderRoot() {

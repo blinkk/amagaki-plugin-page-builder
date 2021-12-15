@@ -4,6 +4,8 @@ import {customElement} from 'lit/decorators.js';
 
 @customElement('grid-inspector')
 export class GridInspector extends LitElement {
+  static STORAGE_KEY = 'inspectorGrid';
+
   connectedCallback() {
     super.connectedCallback();
     // Enable toggling the grid overlay using `ctrl+g` (similar to Figma).
@@ -12,10 +14,15 @@ export class GridInspector extends LitElement {
         this.toggleGridOverlay();
       }
     });
+    if (localStorage.getItem(GridInspector.STORAGE_KEY)) {
+      this.toggleGridOverlay();
+    }
   }
 
   private toggleGridOverlay() {
-    this.style.display = this.style.display === 'none' ? 'block' : 'none';
+    const setVisible = this.style.display != 'block';
+    this.style.display = setVisible ? 'block' : 'none';
+    setVisible ? localStorage.setItem(GridInspector.STORAGE_KEY, 'true') : localStorage.removeItem(GridInspector.STORAGE_KEY);
   }
 
   static get styles() {
