@@ -1,5 +1,5 @@
 import {LitElement, css, html, unsafeCSS} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
+import {customElement, property, state} from 'lit/decorators.js';
 
 interface Breakpoint {
   min?: number;
@@ -22,7 +22,8 @@ export class GridInspector extends LitElement {
   @property({type: Array, attribute: 'grid'})
   options?: GridOptions[];
 
-  grid: GridOptions[];
+  @state()
+  private grid: GridOptions[];
 
   static DEFAULT_OPTIONS = [{
     breakpoint: {
@@ -57,11 +58,13 @@ export class GridInspector extends LitElement {
 
   constructor() {
     super();
-    this.grid = this.options ?? GridInspector.DEFAULT_OPTIONS;
+    this.grid = GridInspector.DEFAULT_OPTIONS;
   }
 
   connectedCallback() {
     super.connectedCallback();
+    this.grid = this.options ?? this.grid;
+
     // Enable toggling the grid overlay using `ctrl+g` (similar to Figma).
     document.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === 'g') {
