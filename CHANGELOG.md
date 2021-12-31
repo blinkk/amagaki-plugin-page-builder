@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.5.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.5.0...v1.5.1) (2021-12-31)
+
+
+### Bug Fixes
+
+* grid options initializer ([a1966f0](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/a1966f0ab6de07f92922c3f43d85481a36716910))
+
 ## [1.5.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.4.1...v1.5.0) (2021-12-31)
 
 
