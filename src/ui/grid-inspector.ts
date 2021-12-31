@@ -1,17 +1,26 @@
 import {LitElement, css, html, unsafeCSS} from 'lit';
 import {customElement, property, state} from 'lit/decorators.js';
 
+/** The breakpoint that the grid options apply to.  */
 interface Breakpoint {
+  /** Minimum viewport width in pixels. */
   min?: number;
+  /** Maximum viewport width in pixels. */
   max?: number;
+  /** A label that refers to this breakpoint. */
   label: string;
 }
 
+/** Options for the grid inspector. The grid inspector aligns with Figma's layout grid options. */
 export interface GridOptions {
   breakpoint: Breakpoint;
+  /** How many columns there are in the grid. */
   count: number;
+  /** The distance from the edge that the column starts.  */
   margin: string;
+  /** The distance between each column. */
   gutter: string;
+  /** The maximum width of the grid. If blank, 100%. */
   maxWidth?: string;
 }
 
