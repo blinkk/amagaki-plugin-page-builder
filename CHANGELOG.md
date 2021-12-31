@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.4.1...v1.5.0) (2021-12-31)
+
+
+### Features
+
+* make grid configurable, add appendSiteName option ([deecd3e](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/deecd3e99ead885fd66545e5f55a1918964950c3))
+
 ### [1.4.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.4.0...v1.4.1) (2021-12-15)
 
 
