@@ -91,6 +91,11 @@ also manages the `<head>` tag and typical elements, such as elements used for
 SEO and sharing metadata, as well as `canonical` and `alternate` links. These
 elements are either configurable or managed automatically.
 
+
+## Options
+
+Refer to the [`PageBuilderOptions` interface](src/page-builder.ts#L69) for a full list of options.
+
 ## Example
 
 See the example in the `/example` directory for a full example, or refer to the
