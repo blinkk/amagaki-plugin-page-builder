@@ -1,8 +1,8 @@
+import { GridInspector, GridOptions } from './grid-inspector';
 import {LitElement, css, html} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
 
 import { AttributeHighlighter } from './attribute-highlighter';
-import { GridInspector } from './grid-inspector';
 import { MarginOutliner } from './margin-outliner';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
@@ -15,6 +15,9 @@ export class PageInspector extends LitElement {
 
   @property({type: Array, attribute: 'margins'})
   margins?: number[];
+
+  @property({type: Array, attribute: 'grid'})
+  grid?: GridOptions[];
 
   static SHORTCUTS_STORAGE_KEY = 'inspectorShortcuts';
 
@@ -125,7 +128,10 @@ export class PageInspector extends LitElement {
             </div>
           </div>
         </div>
-        <grid-inspector></grid-inspector>
+        <grid-inspector
+          grid="${ifDefined(this.grid ? JSON.stringify(this.grid) : undefined)}"
+          >
+        </grid-inspector>
         <margin-outliner
           margins="${ifDefined(this.margins ? JSON.stringify(this.margins) : undefined)}"
         ></margin-outliner>

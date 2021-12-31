@@ -1,10 +1,64 @@
-import {LitElement, css, html} from 'lit';
+import {LitElement, css, html, unsafeCSS} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 
-import {customElement} from 'lit/decorators.js';
+interface Breakpoint {
+  min?: number;
+  max?: number;
+  label: string;
+}
+
+export interface GridOptions {
+  breakpoint: Breakpoint;
+  count: number;
+  margin: string;
+  gutter: string;
+  maxWidth?: string;
+}
 
 @customElement('grid-inspector')
 export class GridInspector extends LitElement {
   static STORAGE_KEY = 'inspectorGrid';
+
+  @property({type: Array, attribute: 'grid'})
+  options?: GridOptions[];
+
+  grid: GridOptions[];
+
+  static DEFAULT_OPTIONS = [{
+    breakpoint: {
+      max: 599,
+      label: 'Mobile (<599px)'
+    },
+    count: 4,
+    margin: '16px',
+    gutter: '24px',
+  },
+  {
+    breakpoint: {
+      min: 600,
+      max: 1023,
+      label: 'Tablet (600 - 1023px)'
+    },
+    count: 12,
+    margin: '24px',
+    gutter: '24px',
+    maxWidth: '600px',
+  },
+  {
+    breakpoint: {
+      min: 1024,
+      label: 'Desktop (>1024px)'
+    },
+    count: 12,
+    margin: '24px',
+    gutter: '24px',
+    maxWidth: '1440px',
+  }]
+
+  constructor() {
+    super();
+    this.grid = this.options ?? GridInspector.DEFAULT_OPTIONS;
+  }
 
   connectedCallback() {
     super.connectedCallback();
@@ -17,6 +71,8 @@ export class GridInspector extends LitElement {
     if (localStorage.getItem(GridInspector.STORAGE_KEY)) {
       this.toggleGridOverlay();
     }
+    window.addEventListener('resize', () => this.updateStyles(), {passive: true});
+    window.setTimeout(() => this.updateStyles());
   }
 
   private toggleGridOverlay() {
@@ -25,139 +81,92 @@ export class GridInspector extends LitElement {
     setVisible ? localStorage.setItem(GridInspector.STORAGE_KEY, 'true') : localStorage.removeItem(GridInspector.STORAGE_KEY);
   }
 
+  private updateStyles() {
+    const width = window.innerWidth;
+    const labelEl = this.shadowRoot?.querySelector('.page-grid__label');
+    const columnEls = Array.from(this.shadowRoot?.querySelectorAll('.page-grid__col')!) as HTMLElement[];
+    for (const grid of this.grid) {
+      const min = grid.breakpoint.min ?? 0;
+      const max = grid.breakpoint.max ?? Infinity;
+      if (min <= width && width <= max) {
+        this.style.setProperty('--page-grid-label', grid.breakpoint.label);
+        this.style.setProperty('--page-grid-column-gap', grid.gutter);
+        this.style.setProperty('--page-grid-column-margin', grid.margin);
+        this.style.setProperty('--page-grid-num-columns', grid.count?.toString() ?? '12');
+        this.style.setProperty('--page-grid-max-width', grid.maxWidth ?? '100%');
+        labelEl?.setAttribute('label', grid.breakpoint.label);
+        for (const [i, el] of columnEls.entries()) {
+          const enabled = i < grid.count;
+          el.style.display = enabled ? 'block' : 'none';
+        }
+      }
+    }
+  }
+
   static get styles() {
     return css`
       :host {
-          display:none
+        display: none;
       }
       .page-grid-overlay {
+        color: #000;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        font-optical-sizing: none;
         font-size: 12px;
         font-weight: 500;
-        color:#000;
-        font-optical-sizing:none;
-        font-size:14px;
-        font-weight:500;
-        height:100vh;
-        left:0;
-        letter-spacing:.25px;
-        line-height:20px;
-        pointer-events:none;
-        position:fixed;
-        top:0;
-        width:100%;
-        z-index:2000;
+        height: 100vh;
+        left: 0;
+        letter-spacing: .25px;
+        line-height: 20px;
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 2000;
       }
       .page-grid-overlay * {
-        box-sizing:border-box
+        box-sizing: border-box
       }
       .page-grid-overlay .page-grid__label {
-        display:none;
-        margin-top:42px;
-        margin-left:8px;
-        padding:0 8px;
-        background:#ebffff;
-        position:absolute;
-        text-align:left
+        background: #ebffff;
+        margin-left: 8px;
+        margin-top: 42px;
+        padding: 0 8px;
+        position: absolute;
+        text-align: left;
       }
-      .page-grid-overlay .opt--mobile::before {
-        content:"Mobile (320 - 599px)"
-      }
-      @media(max-width: 599px) {
-        .page-grid-overlay .opt--mobile {
-            display:block
-        }
-      }
-      .page-grid-overlay .opt--ds-tablet::before {
-        content:"Tablet (600 - 1023px)"
-      }
-      @media(min-width: 600px)and (max-width: 1023px) {
-        .page-grid-overlay .opt--ds-tablet {
-            display:block
-        }
-      }
-      .page-grid-overlay .opt--ds-laptop::before {
-        content:"Laptop (1024 - 1439px)"
-      }
-      @media(min-width: 1024px)and (max-width: 1439px) {
-        .page-grid-overlay .opt--ds-laptop {
-            display:block
-        }
-      }
-      .page-grid-overlay .opt--ds-desktop::before {
-          content:"Desktop (1440px)"
-      }
-      @media(min-width: 1440px) {
-          .page-grid-overlay .opt--ds-desktop {
-              display:block
-          }
+      .page-grid-overlay .page-grid__label::before {
+        content: attr(label);
+        display: block;
       }
       .page-grid-overlay .page-grid {
-          display:grid;
-          -webkit-column-gap:24px;
-          -moz-column-gap:24px;
-          column-gap:24px;
-          counter-reset:column;
-          height:100%
+        column-gap: var(--page-grid-column-gap);
+        counter-reset: column;
+        display: grid;
+        grid-template-columns: repeat(var(--page-grid-num-columns), 1fr);
+        height: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: var(--page-grid-max-width);
+        padding:  0 var(--page-grid-column-margin);
       }
-      @media(max-width: 599px) {
-          .page-grid-overlay .page-grid {
-              grid-template-columns:repeat(4, 1fr);
-              padding:0 16px
-          }
+      .page-grid-overlay .page-grid > * {
+        grid-column-end: span var(--page-grid-num-columns);
       }
-      @media(min-width: 600px)and (max-width: 1023px) {
-          .page-grid-overlay .page-grid {
-              grid-template-columns:repeat(12, 1fr);
-              margin-left:auto;
-              margin-right:auto;
-              max-width:600px;
-              padding:0 24px
-          }
-      }
-      @media(min-width: 1024px)and (max-width: 1439px) {
-          .page-grid-overlay .page-grid {
-              grid-template-columns:repeat(12, 1fr);
-              padding:0 24px
-          }
-      }
-      @media(min-width: 1440px) {
-          .page-grid-overlay .page-grid {
-              grid-template-columns:repeat(12, 1fr);
-              margin-left:auto;
-              margin-right:auto;
-              max-width:1440px;
-              padding:0 24px
-          }
-      }
-      @media(max-width: 599px) {
-          .page-grid-overlay .page-grid>* {
-              grid-column-end:span 4
-          }
-      }
-      @media(min-width: 600px) {
-          .page-grid-overlay .page-grid>* {
-              grid-column-end:span 12
-          }
-      }
-      [page-grid-overlay=true] .page-grid-overlay .page-grid>* {
-          box-shadow:inset 0 0 0 1px orchid
+      [page-grid-overlay=true] .page-grid-overlay .page-grid >  * {
+        box-shadow: inset 0 0 0 1px orchid;
       }
       .page-grid-overlay .page-grid__col {
-          grid-column-end:span 1;
-          background-color:rgba(0,255,255,.08);
-          height:100%;
-          padding-top:12px;
-          text-align:center
+        background-color: rgba(0,255,255,.08);
+        display: none;
+        grid-column-end: span 1;
+        height: 100%;
+        padding-top: 12px;
+        text-align: center;
       }
       .page-grid-overlay .page-grid__col::before {
-          counter-increment:column;
-          content:counter(column)
-      }
-      @media(max-width: 599px) {
-          .page-grid-overlay .page-grid__col:nth-child(5),.page-grid-overlay .page-grid__col:nth-child(6),.page-grid-overlay .page-grid__col:nth-child(7),.page-grid-overlay .page-grid__col:nth-child(8),.page-grid-overlay .page-grid__col:nth-child(9),.page-grid-overlay .page-grid__col:nth-child(10),.page-grid-overlay .page-grid__col:nth-child(11),.page-grid-overlay .page-grid__col:nth-child(12) {
-              display:none
-          }
+        content: counter(column);
+        counter-increment: column;
       }
     `;
   }
@@ -166,10 +175,7 @@ export class GridInspector extends LitElement {
     return html`
       <div class="page-grid-overlay">
         <div class="page-grid">
-          <div class="page-grid__label opt--mobile"></div>
-          <div class="page-grid__label opt--ds-tablet"></div>
-          <div class="page-grid__label opt--ds-laptop"></div>
-          <div class="page-grid__label opt--ds-desktop"></div>
+          <div class="page-grid__label"></div>
           <div class="page-grid__col"></div>
           <div class="page-grid__col"></div>
           <div class="page-grid__col"></div>

@@ -16,6 +16,7 @@ export default async (pod: Pod) => {
   });
   PageBuilder.register(pod, {
     head: {
+      siteName: 'Example',
       scripts: [pod.staticFile('/dist/js/main.js')],
       stylesheets: [
         'https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&display=swap',

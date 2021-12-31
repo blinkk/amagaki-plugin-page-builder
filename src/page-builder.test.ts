@@ -7,6 +7,7 @@ test('PageBuilder', async (t: ExecutionContext) => {
   const pod = new Pod('./example');
   await pod.router.warmup();
   const html = await (await pod.router.resolve('/pages/') as Route).build();
+  t.true(html.includes('<title>Homepage | Example</title>'));
   t.true(html.includes('<page-module'));
   t.false(html.includes('<page-inspector'));
   t.false(html.includes('<page-module-inspector'));

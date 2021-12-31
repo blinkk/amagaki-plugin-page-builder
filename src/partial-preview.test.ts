@@ -14,9 +14,10 @@ test('PatialPreview', async (t: ExecutionContext) => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Preview Gallery</title>
+  <title>Preview Gallery | Example</title>
   <meta name="referrer" content="no-referrer">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Example">
   <meta property="og:url" content="http://localhost/preview/">
   <meta property="og:title" content="Preview Gallery">
   <meta property="og:locale" content="en">

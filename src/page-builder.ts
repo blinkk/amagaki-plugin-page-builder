@@ -11,6 +11,7 @@ import {
 } from '@amagaki/amagaki';
 import {html, safeString} from './utils';
 
+import { GridOptions } from './ui/grid-inspector';
 import {PageBuilderStaticRouteProvider} from './router';
 import {PartialPreviewRouteProvider} from './partial-preview';
 import {SitemapPlugin} from './sitemap';
@@ -60,6 +61,9 @@ interface InspectorOptions {
 
   /** A list of sizes used by the margin inspector. The margin inspector highlights margins, simplifying visual QA. */
   margins?: number[];
+
+  /** Configuration options for a columns-based layout grid. */
+  grid?: GridOptions[];
 }
 
 export interface PageBuilderOptions {
@@ -113,6 +117,9 @@ export interface PageBuilderOptions {
 
     /** Append extra HTML to the bottom of the <head> element. */
     extra?: string[];
+
+    /** Whether to append the site name to the page title. */
+    appendSiteName?: boolean;
   };
   body?: {
     /**
@@ -268,6 +275,7 @@ export class PageBuilder {
           html`
             <page-inspector
               ${this.options?.inspector?.margins ? html`margins="${JSON.stringify(this.options.inspector.margins)}"` : ''}
+              ${this.options?.inspector?.grid ? html`grid="${JSON.stringify(this.options.inspector.grid)}"` : ''}
             ></page-inspector>`
           : ''}
       </body>
@@ -334,6 +342,7 @@ export class PageBuilder {
           twitterSite:
             this.getFieldValue('twitterSite') ?? this.options.head?.twitterSite,
           url: (this.doc.url as Url).toString(),
+          appendSiteName: this.getFieldValue('appendSiteName') ?? this.options.head?.appendSiteName ?? true,
         })}
         ${this.buildHreflangLinkElements()}
         ${this.buildHeadLinkElements({
@@ -424,18 +433,19 @@ export class PageBuilder {
   }
 
   buildHeadMetaElements(options: {
+    appendSiteName?: boolean;
     description?: string;
     image?: string;
     locale?: string;
+    noIndex?: boolean;
     siteName?: string;
     themeColor?: string;
     title: string;
     twitterSite?: string;
     url: string;
-    noIndex?: boolean;
   }) {
     return html`
-      ${options.title ? html`<title>${options.title}</title>` : ''}
+      ${options.title ? html`<title>${options.title} ${options.appendSiteName ? ` | ${options.siteName}` : ''}</title>` : ''}
       ${options.description
         ? html`<meta name="description" content="${options.description}">`
         : ''}
