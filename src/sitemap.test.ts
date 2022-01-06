@@ -15,11 +15,13 @@ test('SitemapPlugin: sitemap.xml', async (t: ExecutionContext) => {
           <loc>http://localhost/pages/foo/</loc>
           <xhtml:link href="http://localhost/pages/foo/" hreflang="x-default" rel="alternate" />
           <xhtml:link href="http://localhost/pages/foo/" hreflang="en" rel="alternate" />
+          <xhtml:link href="http://localhost/ja/pages/foo/" hreflang="ja" rel="alternate" />
       </url>
       <url>
           <loc>http://localhost/pages/</loc>
           <xhtml:link href="http://localhost/pages/" hreflang="x-default" rel="alternate" />
           <xhtml:link href="http://localhost/pages/" hreflang="en" rel="alternate" />
+          <xhtml:link href="http://localhost/ja/pages/" hreflang="ja" rel="alternate" />
       </url>
   </urlset>
   `.trim();

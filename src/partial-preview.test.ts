@@ -27,10 +27,12 @@ test('PatialPreview', async (t: ExecutionContext) => {
   <link href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&amp;display=swap" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link href="./../static/css/main.css?fingerprint=d41d8cd98f00b204e9800998ecf8427e" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <script src="./../static/js/main.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e"></script>
+  <!-- Extra content inserted within the <head> element. -->
   <script src="./../_page-builder/page-builder-ui.min.js"></script>
 </head>
 
 <body>
+  <!-- Extra content inserted within the <body> element. -->
   <div class="main">
     <header>
       <page-module>

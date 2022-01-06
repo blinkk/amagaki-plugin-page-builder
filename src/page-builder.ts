@@ -240,7 +240,7 @@ export class PageBuilder {
       ${await this.buildBodyTag()}
         ${
           this.options.body?.prepend
-            ? await this.buildExtraElements(this.options.body?.prepend)
+            ? safeString(await this.buildExtraElements(this.options.body?.prepend))
             : ''
         }
         <div class="main">
@@ -268,7 +268,7 @@ export class PageBuilder {
         </div>
         ${
           this.options.body?.extra
-            ? await this.buildExtraElements(this.options.body?.extra)
+            ? safeString(await this.buildExtraElements(this.options.body?.extra))
             : ''
         }
         ${this.enableInspector ?
@@ -359,7 +359,7 @@ export class PageBuilder {
             .join('\n') ?? ''
         )}
         ${this.options.head?.extra
-          ? await this.buildExtraElements(this.options.head.extra)
+          ? safeString(await this.buildExtraElements(this.options.head.extra))
           : ''}
         ${safeString(
           this.enableInspector
@@ -404,7 +404,7 @@ export class PageBuilder {
             rel="alternate"
           >`
         : ''}
-      ${[...this.doc.locales]
+      ${safeString([...this.doc.locales]
         .filter(locale => {
           return locale !== this.doc.defaultLocale;
         })
@@ -415,7 +415,7 @@ export class PageBuilder {
             rel="alternate"
           >`;
         })
-        .join('\n')}
+        .join('\n'))}
     `;
   }
 

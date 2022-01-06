@@ -3,6 +3,10 @@ import {Pod} from '@amagaki/amagaki';
 
 export default async (pod: Pod) => {
   pod.configure({
+    localization: {
+      defaultLocale: 'en',
+      locales: ['en', 'ja'],
+    },
     environments: {
       staging: {},
       prod: {},
@@ -22,6 +26,10 @@ export default async (pod: Pod) => {
         'https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&display=swap',
         pod.staticFile('/dist/css/main.css'),
       ],
+      extra: ['/views/head.njk']
+    },
+    body: {
+      prepend: ['/views/body.njk']
     },
     robotsTxt: {
       path: '/bar/robots.txt',
