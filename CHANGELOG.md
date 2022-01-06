@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.6.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.6.0...v1.6.1) (2022-01-06)
+
+
+### Bug Fixes
+
+* issue escaping extra element content ([e32f471](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/e32f47151949005b7df114bf5de42332ff52843e))
+
 ## [1.6.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.5.1...v1.6.0) (2022-01-06)
 
 
