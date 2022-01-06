@@ -5,6 +5,7 @@ import {LitElement, css, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
 import {MarginOutliner as DeguMarginOutliner} from '@blinkk/degu/lib/ui/margin-outliner';
+import Spacing from 'spacingjs/src/spacing.js';
 
 // Adds required styles to page only ever once.
 const addStylesToPage = func.runOnlyOnce(() => {
@@ -37,8 +38,10 @@ const addStylesToPage = func.runOnlyOnce(() => {
 export class MarginOutliner extends LitElement {
   private marginOutliner?: DeguMarginOutliner;
   private show = false;
+  private spacingInitialized = false;
+  private spacingStyleElement?: HTMLStyleElement;
 
-  static DEFAULT_MARGINS = [4, 8, 10, 12, 16, 20, 24, 32, 40, 50, 60, 80, 120];
+  static DEFAULT_MARGINS = [4, 8, 10, 12, 16, 20, 24, 32, 40, 50, 60, 80, 100, 120];
   static STORAGE_KEY = 'inspectorMargins';
 
   @property({type: Array, attribute: 'margins'})
@@ -57,6 +60,21 @@ export class MarginOutliner extends LitElement {
     }
   }
 
+  setSpacingStylesShown(enabled: boolean) {
+    if (enabled) {
+      this.spacingStyleElement?.remove();
+    } else {
+      const styleEl = document.createElement('style') as HTMLStyleElement;
+      styleEl.textContent = `
+        [class^="spacing-js"] {
+          display: none !important;
+        }
+      `;
+      document.head.appendChild(styleEl);
+      this.spacingStyleElement = styleEl;
+    }
+  }
+
   private toggleMarginOutliner() {
     this.show = !this.show;
     if (this.show) {
@@ -66,8 +84,14 @@ export class MarginOutliner extends LitElement {
         querySelector: 'page-module div',
       });
       this.marginOutliner.run();
+      this.setSpacingStylesShown(true);
     } else {
       this.marginOutliner?.dispose();
+      this.setSpacingStylesShown(false);
+    }
+    if (this.show && !this.spacingInitialized) {
+      Spacing.start();
+      this.spacingInitialized = true;
     }
     this.show ? localStorage.setItem(MarginOutliner.STORAGE_KEY, 'true') : localStorage.removeItem(MarginOutliner.STORAGE_KEY);
   }

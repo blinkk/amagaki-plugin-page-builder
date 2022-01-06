@@ -34,7 +34,6 @@ export class PageInspector extends LitElement {
     });
     if (localStorage.getItem(PageInspector.SHORTCUTS_STORAGE_KEY)) {
       this.toggleShortcutHelper();
-      console.log('enabling')
     }
 
     window.addEventListener('resize', () => {
@@ -71,12 +70,14 @@ export class PageInspector extends LitElement {
         border: 1px solid #ccc;
         bottom: 15px;
         display: flex;
+        gap: 5px;
         flex-direction: column;
         font-family: var(--inspector-font-family);
         font-size: 12px;
-        line-height: 16px;
         font-weight: 500;
         left: 15px;
+        line-height: 16px;
+        max-width: 350px;
         padding: 15px;
         position: fixed;
         z-index: 9999;
@@ -84,12 +85,16 @@ export class PageInspector extends LitElement {
 
       .page-inspector__ui__shortcuts__row {
         display: flex;
+        gap: 10px;
       }
 
       .page-inspector__ui__shortcuts__label {
         text-align: right;
-        width: 45px;
-        padding-right: 20px;
+        flex: 0 0 60px;
+      }
+
+      .page-inspector__ui__shortcuts__description {
+        flex-grow: 1;
       }
     `;
   }
@@ -119,12 +124,16 @@ export class PageInspector extends LitElement {
               <div class="page-inspector__ui__shortcuts__description">Toggle layout grids</div>
             </div>
             <div class="page-inspector__ui__shortcuts__row">
+              <div class="page-inspector__ui__shortcuts__label">Ctrl+A</div>
+              <div class="page-inspector__ui__shortcuts__description">Toggle accessibility labels</div>
+            </div>
+            <div class="page-inspector__ui__shortcuts__row">
               <div class="page-inspector__ui__shortcuts__label">Ctrl+M</div>
               <div class="page-inspector__ui__shortcuts__description">Toggle internal margins</div>
             </div>
             <div class="page-inspector__ui__shortcuts__row">
-              <div class="page-inspector__ui__shortcuts__label">Ctrl+A</div>
-              <div class="page-inspector__ui__shortcuts__description">Toggle accessibility labels</div>
+              <div class="page-inspector__ui__shortcuts__label">Measure</div>
+              <div class="page-inspector__ui__shortcuts__description">Enable the margin inspector, move the cursor to an element and press <code>Option</code>, then move the cursor to another element</div>
             </div>
           </div>
         </div>

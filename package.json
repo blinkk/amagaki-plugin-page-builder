@@ -55,7 +55,8 @@
   },
   "dependencies": {
     "js-beautify": "^1.14.0",
-    "lit": "^2.0.2"
+    "lit": "^2.0.2",
+    "spacingjs": "^1.0.7"
   },
   "files": [
     "dist/",
