@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.5.1...v1.6.0) (2022-01-06)
+
+
+### Features
+
+* add spacingjs to page inspector ([5b2e752](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/5b2e7520542b9040a3ba08544728a1a5c6e55462))
+
 ### [1.5.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.5.0...v1.5.1) (2021-12-31)
 
 
