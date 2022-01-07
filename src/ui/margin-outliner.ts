@@ -43,6 +43,7 @@ export class MarginOutliner extends LitElement {
 
   static DEFAULT_MARGINS = [4, 8, 10, 12, 16, 20, 24, 32, 40, 50, 60, 80, 100, 120];
   static STORAGE_KEY = 'inspectorMargins';
+  static QUERY_PARAM_KEY = 'margins';
 
   @property({type: Array, attribute: 'margins'})
   margins?: number[];
@@ -55,9 +56,13 @@ export class MarginOutliner extends LitElement {
         this.toggleMarginOutliner();
       }
     });
-    if (localStorage.getItem(MarginOutliner.STORAGE_KEY)) {
+    if (this.enabledOnLoad) {
       this.toggleMarginOutliner();
     }
+  }
+
+  get enabledOnLoad() {
+    return localStorage.getItem(MarginOutliner.STORAGE_KEY) || new URLSearchParams(window.location.search).has(MarginOutliner.QUERY_PARAM_KEY);
   }
 
   setSpacingStylesShown(enabled: boolean) {

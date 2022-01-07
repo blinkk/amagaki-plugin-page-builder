@@ -27,6 +27,7 @@ export interface GridOptions {
 @customElement('grid-inspector')
 export class GridInspector extends LitElement {
   static STORAGE_KEY = 'inspectorGrid';
+  static QUERY_PARAM_KEY = 'grid';
 
   @property({type: Array, attribute: 'grid'})
   options?: GridOptions[];
@@ -80,11 +81,15 @@ export class GridInspector extends LitElement {
         this.toggleGridOverlay();
       }
     });
-    if (localStorage.getItem(GridInspector.STORAGE_KEY)) {
+    if (this.enabledOnLoad) {
       this.toggleGridOverlay();
     }
     window.addEventListener('resize', () => this.updateStyles(), {passive: true});
     window.setTimeout(() => this.updateStyles());
+  }
+
+  get enabledOnLoad() {
+    return localStorage.getItem(GridInspector.STORAGE_KEY) || new URLSearchParams(window.location.search).has(GridInspector.QUERY_PARAM_KEY);
   }
 
   private toggleGridOverlay() {
