@@ -6,12 +6,18 @@ import {
   Router,
   TemplateContext,
   Url,
+  splitFrontMatter,
 } from '@amagaki/amagaki';
 import {PageBuilder, PageBuilderOptions} from './page-builder';
 
 import path from 'path';
 
 interface PartialPreviewRouteProviderOptions {
+  pageBuilderOptions: PageBuilderOptions;
+}
+
+interface PartialPreviewRouteOptions {
+  partial: Partial;
   pageBuilderOptions: PageBuilderOptions;
 }
 
@@ -58,6 +64,14 @@ export class PartialPreviewRouteProvider extends RouteProvider {
       partials: partials,
       pageBuilderOptions: this.options.pageBuilderOptions,
     }));
+    partials.forEach(partial => {
+      routes.push(
+        new PartialPreviewRoute(this, {
+          partial: partial,
+          pageBuilderOptions: this.options.pageBuilderOptions,
+        })
+      );
+    });
     return routes;
   }
 }
@@ -117,6 +131,102 @@ class PartialGalleryRoute extends Route {
       process: process,
     };
     const builder = new PageBuilder(fakeDoc, context, this.options.pageBuilderOptions);
+    return await builder.buildDocument();
+  }
+}
+
+
+const findMockInstances = async (pod: Pod, partial: string) => {
+  const docs = pod.docs('/content/**');
+  const mocks = [];
+  for (const doc of docs) {
+    if (!doc?.fields?.partials) {
+      continue;
+    }
+    // @ts-ignore
+    await doc.resolveFields();
+    for (const item of doc.fields.partials) {
+      if (item.partial === partial) {
+        mocks.push(item);
+      }
+    }
+  }
+  return mocks;
+};
+
+
+class PartialPreviewRoute extends Route {
+  options: PartialPreviewRouteOptions;
+
+  constructor(provider: RouteProvider, options: PartialPreviewRouteOptions) {
+    super(provider);
+    this.provider = provider;
+    this.options = options;
+  }
+  get path() {
+    return this.urlPath;
+  }
+  get urlPath() {
+    return `/preview/${this.options.partial.name}/`;
+  }
+  async build() {
+    const {frontMatter} = splitFrontMatter(
+      this.provider.pod.readFile(this.options.partial.podPath)
+    );
+    const mockData = frontMatter ? this.pod.readYamlString(frontMatter) || {} : {};
+    const mocks = [
+      ...(mockData?.mocks ?? []),
+      ...(await findMockInstances(this.pod, this.options.partial.name)),
+    ];
+    const partials = [];
+    const partial = path.join(__dirname, 'ui', 'partial-preview-spacer.njk');
+    partials.push({
+      partial: {
+        partial: 'preview-spacer',
+        includeInspector: false,
+        absolutePath: partial,
+      },
+    });
+    for (const [mockName, mockData] of Object.entries(mocks)) {
+      const mock = {
+        partial: this.options.partial.name,
+      };
+      partials.push(Object.assign(mock, mockData));
+      partials.push({
+        partial: {
+          partial: 'preview-spacer',
+          includeInspector: false,
+          absolutePath: partial,
+        },
+      });
+    }
+    const fakeDoc = ({
+      constructor: {name: 'Document'},
+      pod: this.provider.pod,
+      podPath: '',
+      locales: [],
+      fields: {
+        title: `${this.options.partial.name} – Preview`,
+        partials: partials,
+      },
+      defaultLocale: this.pod.locale('en'),
+      locale: this.pod.locale('en'),
+      url: new Url({
+        path: this.urlPath,
+        env: this.pod.env,
+      }),
+    } as unknown) as Document;
+    const context: TemplateContext = {
+      doc: fakeDoc,
+      env: this.provider.pod.env,
+      pod: this.provider.pod,
+      process: process,
+    };
+    const builder = new PageBuilder(
+      fakeDoc,
+      context,
+      this.options.pageBuilderOptions
+    );
     return await builder.buildDocument();
   }
 }
