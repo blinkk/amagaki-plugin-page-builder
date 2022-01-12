@@ -28,11 +28,13 @@ interface PartialGalleryRouteOptions {
 
 export class PartialPreviewRouteProvider extends RouteProvider {
   options: PartialPreviewRouteProviderOptions;
+  partialsBasePath: string;
 
   constructor(router: Router, options: PartialPreviewRouteProviderOptions) {
     super(router);
     this.type = 'partialPreview';
     this.options = options;
+    this.partialsBasePath = this.pod.fileExists('/src/partials') ? '/src/partials' : '/views/partials';
   }
 
   static register(pod: Pod, options: PartialPreviewRouteProviderOptions) {
@@ -43,7 +45,7 @@ export class PartialPreviewRouteProvider extends RouteProvider {
 
   async routes(): Promise<Route[]> {
     const routes: Route[] = [];
-    const podPaths = this.pod.walk('/views/partials');
+    const podPaths = this.pod.walk(this.partialsBasePath);
     const partials = podPaths.map((podPath: string) => {
       const filename = podPath.split('/').pop() as string;
       return {
@@ -62,8 +64,9 @@ export class PartialPreviewRouteProvider extends RouteProvider {
 
 class PartialGalleryRoute extends Route {
   options: PartialGalleryRouteOptions;
+  provider: PartialPreviewRouteProvider;
 
-  constructor(provider: RouteProvider, options: PartialGalleryRouteOptions) {
+  constructor(provider: PartialPreviewRouteProvider, options: PartialGalleryRouteOptions) {
     super(provider);
     this.provider = provider;
     this.options = options;
@@ -86,7 +89,7 @@ class PartialGalleryRoute extends Route {
           includeInspector: false,
           absolutePath: partial,
         },
-        partials: this.pod.walk('/views/partials/').map(podPath => {
+        partials: this.pod.walk(this.provider.partialsBasePath).map(podPath => {
           return path.basename(podPath).split('.')[0];
         }),
       },

@@ -29,6 +29,8 @@ interface BuiltinPartial {
  * The pod path formats for CSS, JS, and the template for each partial. Values are interpolated.
  */
 interface PartialPaths {
+  /** The path format to load content for a partial. Note: This is optional. Most partials will use page-specific content. Some global partials, e.g. a header and footer, will use shared content. Default: `/content/partials/${partial.partial}.yaml` */
+  content?: string;
   /** The path format to load the CSS for a partial. Default: `/dist/css/partials/${partial.partial}.css` */
   css: string;
   /** The path format to load the JS for a partial. Default: `/dist/js/partials/${partial.partial}.js` */
@@ -169,6 +171,7 @@ export class PageBuilder {
       this.options
     );
     this.partialPaths = options?.partialPaths ?? {
+      content: '/content/partials/${partial.partial}.yaml',
       css: '/dist/css/partials/${partial.partial}.css',
       js: '/dist/js/partials/${partial.partial}.js',
       view: '/views/partials/${partial.partial}.njk',
@@ -308,8 +311,13 @@ export class PageBuilder {
   }
 
   async buildBuiltinPartial(partial: string) {
-    const contentPodPath = `/content/partials/${partial}.yaml`;
-    const viewPodPath = `/views/partials/${partial}.njk`;
+    const contentPartialPath = this.partialPaths.content ?? '/content/partials/${partial.partial}.yaml';
+    const contentPodPath = interpolate(this.pod, contentPartialPath, {
+      partial: {partial: partial},
+    });
+    const viewPodPath = interpolate(this.pod, this.partialPaths.view, {
+      partial: {partial: partial},
+    });
     return this.pod.fileExists(viewPodPath)
       ? html`
         <${partial}>
