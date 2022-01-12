@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.7.0...v1.8.0) (2022-01-12)
+
+
+### Features
+
+* add module previewer ([d050457](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/d050457015d4ea102b395b7ceacd0ece25156dc7))
+
 ## [1.7.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.6.1...v1.7.0) (2022-01-12)
 
 
