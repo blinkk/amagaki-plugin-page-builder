@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.6.1...v1.7.0) (2022-01-12)
+
+
+### Features
+
+* add support for toggling grid and margins using query params ([5daf871](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/5daf87199594169bb44596e2608faad0bd861d89))
+
+
+### Bug Fixes
+
+* allow parameterization of builtin partials ([945b4f1](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/945b4f13a1553ea4743a610cd50e88ee40be61dd))
+
 ### [1.6.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.6.0...v1.6.1) (2022-01-06)
 
 
