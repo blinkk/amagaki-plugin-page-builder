@@ -96,6 +96,16 @@ elements are either configurable or managed automatically.
 
 Refer to the [`PageBuilderOptions` interface](src/page-builder.ts#L69) for a full list of options.
 
+### Grid inspector settings
+
+The page builder includes a configurable layout grid inspector to simplify
+comparing a web page to a Figma design. The grid inspector can be configured
+across various breakpoints, with parameters that align to Figma's options:
+
+- **The Count** determines how many columns there are in the grid.
+- **The Gutter** defines the distance between each column.
+- **The Margin** is the distance from the edge that the column.
+
 ## Example
 
 See the example in the `/example` directory for a full example, or refer to the
