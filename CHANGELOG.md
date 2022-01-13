@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.8.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.8.0...v1.8.1) (2022-01-13)
+
+
+### Bug Fixes
+
+* support src/partials dir ([78d7f92](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/78d7f9224a79a02b649b883a2af550aa4a592da7))
+
 ## [1.8.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.7.0...v1.8.0) (2022-01-12)
 
 
