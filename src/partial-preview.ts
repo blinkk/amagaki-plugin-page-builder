@@ -6,10 +6,12 @@ import {
   Router,
   TemplateContext,
   Url,
+  interpolate,
   splitFrontMatter,
 } from '@amagaki/amagaki';
 import {PageBuilder, PageBuilderOptions} from './page-builder';
 
+import fs from 'fs';
 import path from 'path';
 
 interface PartialPreviewRouteProviderOptions {
@@ -49,13 +51,22 @@ export class PartialPreviewRouteProvider extends RouteProvider {
     return provider;
   }
 
+  get partialNames() {
+    return fs.readdirSync(this.pod.getAbsoluteFilePath(this.partialsBasePath)).map(filename => filename.split('.')[0]);
+  }
+
+  getPodPathFromFilename(filename: string) {
+    const viewPathFormat = this.options?.pageBuilderOptions?.partialPaths?.view ?? '/views/partials/${partial.partial}.njk';
+    return interpolate(this.pod, viewPathFormat, {
+      partial: {partial: filename},
+    });
+  }
+
   async routes(): Promise<Route[]> {
     const routes: Route[] = [];
-    const podPaths = this.pod.walk(this.partialsBasePath);
-    const partials = podPaths.map((podPath: string) => {
-      const filename = podPath.split('/').pop() as string;
+    const partials = this.partialNames.map((filename: string) => {
       return {
-        podPath: podPath,
+        podPath: this.getPodPathFromFilename(filename),
         name: filename.split('.')[0],
         basename: filename,
       };
@@ -103,9 +114,7 @@ class PartialGalleryRoute extends Route {
           includeInspector: false,
           absolutePath: partial,
         },
-        partials: this.pod.walk(this.provider.partialsBasePath).map(podPath => {
-          return path.basename(podPath).split('.')[0];
-        }),
+        partials: this.provider.partialNames,
       },
     ];
     const fakeDoc = {
