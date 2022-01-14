@@ -21,11 +21,11 @@ export class PageBuilderInspector extends LitElement {
 
   addIdToPageModule() {
     const pageModule = this.closest('page-module');
-    if (pageModule) {
+    if (pageModule && !pageModule.id) {
       pageModule.id = this.elementId;
     }
   }
-  
+
   get allInspectors() {
     return Array.from(document.querySelectorAll('page-module-inspector'));
   }

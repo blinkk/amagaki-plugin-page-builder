@@ -538,7 +538,8 @@ export class PageBuilder {
     const engine = this.pod.engines.getEngineByFilename(
       this.partialPaths.view
     ) as TemplateEngineComponent;
-    partialBuilder.push('<page-module>');
+    const htmlId = partial.id ? ` id="${partial.id}"` : '';
+    partialBuilder.push(`<page-module${htmlId}>`);
     if (this.enableInspector && partial.partial?.includeInspector !== false) {
       partialBuilder.push(html`
         <page-module-inspector partial="${name}"></page-module-inspector>
