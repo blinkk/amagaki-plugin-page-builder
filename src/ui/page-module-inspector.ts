@@ -3,6 +3,8 @@ import {customElement, property} from 'lit/decorators.js';
 
 @customElement('page-module-inspector')
 export class PageBuilderInspector extends LitElement {
+  private pageModule: HTMLElement | null = null;
+
   @property({type: String, attribute: 'partial'})
   partial = '';
 
@@ -20,9 +22,9 @@ export class PageBuilderInspector extends LitElement {
   }
 
   addIdToPageModule() {
-    const pageModule = this.closest('page-module');
-    if (pageModule && !pageModule.id) {
-      pageModule.id = this.elementId;
+    this.pageModule = this.closest('page-module');
+    if (this.pageModule && !this.pageModule.id) {
+      this.pageModule.id = `m${this.moduleIndex}`
     }
   }
 
@@ -39,7 +41,7 @@ export class PageBuilderInspector extends LitElement {
   }
 
   get elementId() {
-    return `m${this.moduleIndex}`;
+    return this.pageModule?.id;
   }
 
   static get styles() {
