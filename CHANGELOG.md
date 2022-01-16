@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.8.2](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.8.1...v1.8.2) (2022-01-16)
+
+
+### Bug Fixes
+
+* allow partial.id to be specified ([a3e04a1](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/a3e04a1e1fd99b84cf203670112b0612fac25da7))
+
 ### [1.8.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.8.0...v1.8.1) (2022-01-13)
 
 
