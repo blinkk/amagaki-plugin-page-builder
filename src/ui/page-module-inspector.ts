@@ -22,7 +22,7 @@ export class PageBuilderInspector extends LitElement {
   }
 
   addIdToPageModule() {
-    this.pageModule = this.closest('page-module');
+    this.pageModule = this.parentElement as HTMLElement;
     if (this.pageModule && !this.pageModule.id) {
       this.pageModule.id = `m${this.moduleIndex}`
     }

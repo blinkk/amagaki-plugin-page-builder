@@ -37,19 +37,43 @@ test('PatialPreview', async (t: ExecutionContext) => {
     <header>
       <page-module>
         <page-module-inspector partial="header"></page-module-inspector>
-        <div class="header">
-          <p>Header</p>
-        </div>
+        <page-module-container>
+          <div class="header">
+            <p>Header</p>
+          </div>
+        </page-module-container>
+        <page-module-context>
+          <script type="application/json">
+            {
+              "partial": "header"
+            }
+          </script>
+        </page-module-context>
       </page-module>
     </header>
     <main>
       <page-module>
-        <div class="partial-preview-gallery">
-          <ul>
-            <li><a href="/preview/header/">header</a>
-            <li><a href="/preview/hero/">hero</a>
-          </ul>
-        </div>
+        <page-module-container>
+          <div class="partial-preview-gallery">
+            <ul>
+              <li><a href="/preview/header/">header</a>
+              <li><a href="/preview/hero/">hero</a>
+            </ul>
+          </div>
+        </page-module-container>
+        <page-module-context>
+          <script type="application/json">
+            {
+              "partial": {
+                "partial": "partial-preview-gallery"
+              },
+              "partials": [
+                "header",
+                "hero"
+              ]
+            }
+          </script>
+        </page-module-context>
       </page-module>
     </main>
   </div>

@@ -71,6 +71,9 @@ interface InspectorOptions {
 export interface PageBuilderOptions {
   inspector?: InspectorOptions;
 
+  /** Whether to dump the partial context into an element adjacent to each partial's `<page-module />` element. A partial's context may be used if the partial needs to be hydrated, inspected, or otherwise. */
+  includeContext?: boolean;
+
   /** Whether to beautify HTML output. */
   beautify?: boolean;
   footer?: BuiltinPartial;
@@ -155,6 +158,7 @@ export class PageBuilder {
   context: TemplateContext;
   options: PageBuilderOptions;
   enableInspector: boolean;
+  includeContext: boolean;
 
   constructor(
     doc: Document,
@@ -170,6 +174,7 @@ export class PageBuilder {
       this.pod,
       this.options
     );
+    this.includeContext = this.options.includeContext ?? this.enableInspector;
     this.partialPaths = options?.partialPaths ?? {
       content: '/content/partials/${partial.partial}.yaml',
       css: '/dist/css/partials/${partial.partial}.css',
@@ -308,6 +313,30 @@ export class PageBuilder {
 
   getHtmlLang(locale: Locale) {
     return locale.id.replace('_ALL', '').replace('_', '-');
+  }
+
+  serializeContext(partialContext: any) {
+    const context = {...partialContext};
+    delete context.partial.absolutePath;
+    delete context.partial.includeInspector;
+    return JSON.stringify(context, ((key, value) => {
+      if (value?.constructor?.name === 'Pod' && value.root) {
+        return undefined;
+      }
+      return value;
+    }), 2);
+  }
+
+  async buildContextElement(context: any) {
+    return html`
+      <page-module-context>
+        <script type="application/json">
+          ${safeString(this.serializeContext(
+            context.partial
+          ))}
+        </script>
+      </page-module-context>
+    `;
   }
 
   async buildBuiltinPartial(partial: string) {
@@ -531,20 +560,21 @@ export class PageBuilder {
         );
       }
     );
-    const partialBuilder = [];
-    // Load resources required by partial module.
-    cssFile.exists && partialBuilder.push(this.buildStyleLinkElement(cssFile));
-    jsFile.exists && partialBuilder.push(this.buildScriptElement(jsFile));
     const engine = this.pod.engines.getEngineByFilename(
       this.partialPaths.view
     ) as TemplateEngineComponent;
+    const partialBuilder = [];
     const htmlId = partial.id ? ` id="${partial.id}"` : '';
     partialBuilder.push(`<page-module${htmlId}>`);
+    // Load resources required by partial module.
+    cssFile.exists && partialBuilder.push(this.buildStyleLinkElement(cssFile));
+    jsFile.exists && partialBuilder.push(this.buildScriptElement(jsFile));
     if (this.enableInspector && partial.partial?.includeInspector !== false) {
       partialBuilder.push(html`
         <page-module-inspector partial="${name}"></page-module-inspector>
       `);
     }
+    partialBuilder.push('<page-module-container>')
     const context = {...this.context, partial};
     let result;
     // TODO: Handle error when partial doesn't exist.
@@ -558,6 +588,12 @@ export class PageBuilder {
       result = await engine.renderFromString(template, context);
     }
     partialBuilder.push(result);
+    partialBuilder.push('</page-module-container>')
+    if (this.includeContext || partial.includeContext) {
+      partialBuilder.push(
+        await this.buildContextElement(context)
+      );
+    }
     partialBuilder.push('</page-module>');
     return safeString(partialBuilder.join('\n'));
   }
