@@ -76,6 +76,10 @@ export interface PageBuilderOptions {
 
   /** Whether to beautify HTML output. */
   beautify?: boolean;
+
+  /** Whether to beautity the contents of the `<page-module-container>` element. */
+  beautifyContainer?: boolean;
+
   footer?: BuiltinPartial;
   header?: BuiltinPartial;
   head?: {
@@ -294,7 +298,11 @@ export class PageBuilder {
       return text;
     }
     text = text.replace(/^\s*\n/gm, '');
-    return jsBeautify.html(text, {indent_size: 2});
+    const unformattedOptions = [];
+    if (this.options.beautifyContainer === false) {
+      unformattedOptions.push('page-module-container');
+    }
+    return jsBeautify.html(text, {indent_size: 2, unformatted: unformattedOptions});
   }
 
   getUrl(item: any, options?: GetUrlOptions) {
@@ -574,7 +582,6 @@ export class PageBuilder {
         <page-module-inspector partial="${name}"></page-module-inspector>
       `);
     }
-    partialBuilder.push('<page-module-container>')
     const context = {...this.context, partial};
     let result;
     // TODO: Handle error when partial doesn't exist.
@@ -587,8 +594,13 @@ export class PageBuilder {
       const template = fs.readFileSync(partial.partial?.absolutePath, 'utf8');
       result = await engine.renderFromString(template, context);
     }
-    partialBuilder.push(result);
-    partialBuilder.push('</page-module-container>')
+    if (this.options.beautifyContainer === false) {
+      partialBuilder.push(`<page-module-container>${result?.trim()}</page-module-container>`);
+    } else {
+      partialBuilder.push('<page-module-container>');
+      partialBuilder.push(result?.trim());
+      partialBuilder.push('</page-module-container>');
+    } 
     if (this.includeContext || partial.includeContext) {
       partialBuilder.push(
         await this.buildContextElement(context)
