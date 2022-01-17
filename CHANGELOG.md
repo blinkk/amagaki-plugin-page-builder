@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v2.0.0...v2.1.0) (2022-01-17)
+
+
+### Features
+
+* add beautifyContainer option ([cccc225](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/cccc225002599f5c464db948f4cecf43db384a01))
+
 ## [2.0.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.8.2...v2.0.0) (2022-01-17)
 
 
