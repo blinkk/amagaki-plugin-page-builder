@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.8.2...v2.0.0) (2022-01-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* add partial context to page markup
+
+### Features
+
+* add partial context to page markup ([7ad5560](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/7ad5560b99b6d8be1df3910cb186c2c82d1f1bd7))
+
 ### [1.8.2](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v1.8.1...v1.8.2) (2022-01-16)
 
 
