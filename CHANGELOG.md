@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v2.1.0...v3.0.0) (2022-01-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* allow mixing different partial path formats
+
+### Features
+
+* allow mixing different partial path formats ([46233e8](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/46233e87b29a1f1fe13854900f81602d4aedfd33))
+
 ## [2.1.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v2.0.0...v2.1.0) (2022-01-17)
 
 
