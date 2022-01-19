@@ -29,14 +29,14 @@ interface BuiltinPartial {
  * The pod path formats for CSS, JS, and the template for each partial. Values are interpolated.
  */
 interface PartialPaths {
-  /** The path format to load content for a partial. Note: This is optional. Most partials will use page-specific content. Some global partials, e.g. a header and footer, will use shared content. Default: `/content/partials/${partial.partial}.yaml` */
-  content?: string;
-  /** The path format to load the CSS for a partial. Default: `/dist/css/partials/${partial.partial}.css` */
-  css: string;
-  /** The path format to load the JS for a partial. Default: `/dist/js/partials/${partial.partial}.js` */
-  js: string;
-  /** The path format to the view for a partial. Default: `/views/partials/${partial.partial}.njk` */
-  view: string;
+  /** The path format to load content for a partial. Note: This is optional. Most partials will use page-specific content. Some global partials, e.g. a header and footer, will use shared content. Default: `[/content/partials/${partial.partial}.yaml]` */
+  content?: string[];
+  /** The path format to load the CSS for a partial. Default: `[/dist/css/partials/${partial.partial}.css]` */
+  css: string[];
+  /** The path format to load the JS for a partial. Default: `[/dist/js/partials/${partial.partial}.js]` */
+  js: string[];
+  /** The path format to the view for a partial. Default: `[/views/partials/${partial.partial}.njk]` */
+  view: string[];
 }
 
 type ResourceLoader = {
@@ -180,10 +180,10 @@ export class PageBuilder {
     );
     this.includeContext = this.options.includeContext ?? this.enableInspector;
     this.partialPaths = options?.partialPaths ?? {
-      content: '/content/partials/${partial.partial}.yaml',
-      css: '/dist/css/partials/${partial.partial}.css',
-      js: '/dist/js/partials/${partial.partial}.js',
-      view: '/views/partials/${partial.partial}.njk',
+      content: ['/content/partials/${partial.partial}.yaml'],
+      css: ['/dist/css/partials/${partial.partial}.css'],
+      js: ['/dist/js/partials/${partial.partial}.js'],
+      view: ['/views/partials/${partial.partial}.njk'],
     };
   }
 
@@ -347,20 +347,26 @@ export class PageBuilder {
     `;
   }
 
+  static selectPodPath(pod: Pod, pathFormats: string[], partial: string) {
+    for (const pathFormat of pathFormats) {
+      const podPath = interpolate(pod, pathFormat, {
+        partial: {partial: partial},
+      });
+      if (pod.fileExists(podPath)) {
+        return podPath;
+      }
+    }
+  }
+
   async buildBuiltinPartial(partial: string) {
-    const contentPartialPath = this.partialPaths.content ?? '/content/partials/${partial.partial}.yaml';
-    const contentPodPath = interpolate(this.pod, contentPartialPath, {
-      partial: {partial: partial},
-    });
-    const viewPodPath = interpolate(this.pod, this.partialPaths.view, {
-      partial: {partial: partial},
-    });
-    return this.pod.fileExists(viewPodPath)
+    const contentPodPath = PageBuilder.selectPodPath(this.pod, this.partialPaths.content ?? ['/content/partials/${partial.partial}.yaml'], partial);
+    const viewPodPath = PageBuilder.selectPodPath(this.pod, this.partialPaths.view, partial);
+    return viewPodPath
       ? html`
         <${partial}>
         ${await this.buildPartialElement({
           ...{partial: partial},
-          ...(this.pod.fileExists(contentPodPath)
+          ...(contentPodPath
             ? this.pod.doc(contentPodPath, this.context.doc.locale).fields
             : {}),
         })}
@@ -557,26 +563,21 @@ export class PageBuilder {
       typeof partial.partial === 'string'
         ? partial.partial
         : partial.partial?.partial;
-    const [cssFile, jsFile] = [this.partialPaths.css, this.partialPaths.js].map(
-      pathFormat => {
-        return this.pod.staticFile(
-          interpolate(this.pod, pathFormat, {
-            partial: {
-              partial: name,
-            },
-          })
-        );
-      }
-    );
-    const engine = this.pod.engines.getEngineByFilename(
-      this.partialPaths.view
-    ) as TemplateEngineComponent;
+    const cssPodPath = PageBuilder.selectPodPath(this.pod, this.partialPaths.css, name);
+    const jsPodPath = PageBuilder.selectPodPath(this.pod, this.partialPaths.js, name);
+    const viewPodPath = PageBuilder.selectPodPath(this.pod, this.partialPaths.view, name);
     const partialBuilder = [];
     const htmlId = partial.id ? ` id="${partial.id}"` : '';
     partialBuilder.push(`<page-module${htmlId}>`);
     // Load resources required by partial module.
-    cssFile.exists && partialBuilder.push(this.buildStyleLinkElement(cssFile));
-    jsFile.exists && partialBuilder.push(this.buildScriptElement(jsFile));
+    if (cssPodPath) {
+      const cssFile = this.pod.staticFile(cssPodPath)
+      partialBuilder.push(this.buildStyleLinkElement(cssFile));
+    }
+    if (jsPodPath) {
+      const jsFile = this.pod.staticFile(jsPodPath);
+      partialBuilder.push(this.buildScriptElement(jsFile));
+    }
     if (this.enableInspector && partial.partial?.includeInspector !== false) {
       partialBuilder.push(html`
         <page-module-inspector partial="${name}"></page-module-inspector>
@@ -586,12 +587,18 @@ export class PageBuilder {
     let result;
     // TODO: Handle error when partial doesn't exist.
     if (typeof partial.partial === 'string') {
-      const partialFile = interpolate(this.pod, this.partialPaths.view, {
+      const partialFile = interpolate(this.pod, viewPodPath, {
         partial: partial,
       });
+      const engine = this.pod.engines.getEngineByFilename(
+        partialFile
+      ) as TemplateEngineComponent;
       result = await engine.render(partialFile, context);
     } else if (partial.partial?.absolutePath) {
-      const template = fs.readFileSync(partial.partial?.absolutePath, 'utf8');
+      const engine = this.pod.engines.getEngineByFilename(
+        partial.partial.absolutePath
+      ) as TemplateEngineComponent;
+      const template = fs.readFileSync(partial.partial.absolutePath, 'utf8');
       result = await engine.renderFromString(template, context);
     }
     if (this.options.beautifyContainer === false) {

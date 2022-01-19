@@ -55,18 +55,13 @@ export class PartialPreviewRouteProvider extends RouteProvider {
     return fs.readdirSync(this.pod.getAbsoluteFilePath(this.partialsBasePath)).map(filename => filename.split('.')[0]);
   }
 
-  getPodPathFromFilename(filename: string) {
-    const viewPathFormat = this.options?.pageBuilderOptions?.partialPaths?.view ?? '/views/partials/${partial.partial}.njk';
-    return interpolate(this.pod, viewPathFormat, {
-      partial: {partial: filename},
-    });
-  }
-
   async routes(): Promise<Route[]> {
+    const pathFormats = this.options?.pageBuilderOptions?.partialPaths?.view ?? ['/views/partials/${partial.partial}.njk'];
     const routes: Route[] = [];
     const partials = this.partialNames.map((filename: string) => {
+      const podPath = PageBuilder.selectPodPath(this.pod, pathFormats, filename);
       return {
-        podPath: this.getPodPathFromFilename(filename),
+        podPath: podPath,
         name: filename.split('.')[0],
         basename: filename,
       };
