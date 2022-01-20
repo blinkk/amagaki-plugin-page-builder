@@ -144,12 +144,12 @@ export interface PageBuilderOptions {
   partialPaths?: PartialPaths;
   /** Options for generating the sitemap. */
   sitemapXml?: {
-    /** The URL path for the `sitemap.xml`. */
+    /** The URL path for the `sitemap.xml`. Example: `/sitemap.xml` */
     path: string;
   };
   /** Options for generating the `robots.txt` file. */
   robotsTxt?: {
-    /** The URL path for the `robots.txt` file. */
+    /** The URL path for the `robots.txt` file. Example: `/robots.txt` */
     path: string;
   };
 }
