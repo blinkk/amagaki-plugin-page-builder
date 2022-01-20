@@ -58,14 +58,17 @@ export class PartialPreviewRouteProvider extends RouteProvider {
   async routes(): Promise<Route[]> {
     const pathFormats = this.options?.pageBuilderOptions?.partialPaths?.view ?? ['/views/partials/${partial.partial}.njk'];
     const routes: Route[] = [];
-    const partials = this.partialNames.map((filename: string) => {
+    const partials = [];
+    for (const filename of this.partialNames) {
       const podPath = PageBuilder.selectPodPath(this.pod, pathFormats, filename);
-      return {
-        podPath: podPath,
-        name: filename.split('.')[0],
-        basename: filename,
-      };
-    });
+      if (podPath) {
+        partials.push({
+          podPath: podPath,
+          name: filename.split('.')[0],
+          basename: filename,
+        });
+      }
+    };
     routes.push(new PartialGalleryRoute(this, {
       partials: partials,
       pageBuilderOptions: this.options.pageBuilderOptions,
