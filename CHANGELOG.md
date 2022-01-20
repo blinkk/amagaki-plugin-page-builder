@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.0.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.0.0...v3.0.1) (2022-01-20)
+
+
+### Bug Fixes
+
+* building partial gallery for non-existent partials ([0f78a04](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/0f78a0481e3184f3d258e7f53c5397fdde0b277e))
+
 ## [3.0.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v2.1.0...v3.0.0) (2022-01-19)
 
 
