@@ -585,8 +585,16 @@ export class PageBuilder {
     }
     const context = {...this.context, partial};
     let result;
-    // TODO: Handle error when partial doesn't exist.
     if (typeof partial.partial === 'string') {
+      // TODO: Handle error when partial doesn't exist. In this case, no file
+      // matched `viewPodPath` on the filesystem and `selectPodPath` failed. We
+      // should fail the build in prod and in dev show an in-page module saying
+      // `Partial not found: ${name}`. The user can then fix the source of the
+      // problem (by either adding the partial or by fixing the configuration).
+      if (!viewPodPath) {
+        console.error(`Partial not found: ${name}`);
+        return '';
+      }
       const partialFile = interpolate(this.pod, viewPodPath, {
         partial: partial,
       });
