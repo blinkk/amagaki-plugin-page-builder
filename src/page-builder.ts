@@ -68,6 +68,13 @@ interface InspectorOptions {
   grid?: GridOptions[];
 }
 
+const PRECONNECT_MARKER = '<!-- page-builder: preconnect -->';
+
+interface PreconnectOrigin {
+  url: string;
+  crossorigin: boolean;
+}
+
 export interface PageBuilderOptions {
   inspector?: InspectorOptions;
 
@@ -163,6 +170,7 @@ export class PageBuilder {
   options: PageBuilderOptions;
   enableInspector: boolean;
   includeContext: boolean;
+  preconnectOrigins: Set<PreconnectOrigin>;
 
   constructor(
     doc: Document,
@@ -178,6 +186,7 @@ export class PageBuilder {
       this.pod,
       this.options
     );
+    this.preconnectOrigins = new Set();
     this.includeContext = this.options.includeContext ?? this.enableInspector;
     this.partialPaths = options?.partialPaths ?? {
       content: ['/content/partials/${partial.partial}.yaml'],
@@ -294,6 +303,13 @@ export class PageBuilder {
       </html>
     `;
     let text = result.toString();
+    // Insert collected preconnect elements.
+    if (this.preconnectOrigins.size > 0) {
+      const preconnectElements = this.buildPreconnectElements([...this.preconnectOrigins]).join('\n');
+      text = text.replace(PRECONNECT_MARKER, preconnectElements);
+    } else {
+      text = text.replace(PRECONNECT_MARKER, '');
+    }
     if (this.options.beautify === false) {
       return text;
     }
@@ -401,12 +417,12 @@ export class PageBuilder {
         })}
         ${safeString(
           this.options.head?.stylesheets
-            ?.map(style => this.buildStyleLinkElement(style))
+            ?.map(style => this.buildStyleLinkElement(style, undefined))
             .join('\n') ?? ''
         )}
         ${safeString(
           this.options.head?.scripts
-            ?.map(script => this.buildScriptElement(script))
+            ?.map(script => this.buildScriptElement(script, undefined))
             .join('\n') ?? ''
         )}
         ${this.options.head?.extra
@@ -428,9 +444,11 @@ export class PageBuilder {
   }
 
   async buildExtraElements(extra: string[]) {
-    return (
+    const html = (
       await Promise.all(extra.map(podPath => this.renderFile(podPath)))
     ).join('\n');
+    this.collectPreconnectOrigins(html);
+    return html;
   }
 
   async renderFile(podPath: string) {
@@ -504,6 +522,7 @@ export class PageBuilder {
         ? html`<meta name="theme-color" content="${options.themeColor}">`
         : ''}
       ${options.noIndex ? html`<meta name="robots" content="noindex">` : ''}
+      ${safeString(PRECONNECT_MARKER)}
       <meta name="referrer" content="no-referrer">
       <meta property="og:type" content="website">
       ${options.siteName
@@ -665,6 +684,37 @@ export class PageBuilder {
     `;
   }
 
+  /** Returns a list of origins to preconnect to given a string. */
+  getPreconnectOrigins(content: string): PreconnectOrigin[] {
+    const origins: PreconnectOrigin[] = [];
+    if (/https:\/\/fonts.googleapis.com/g.test(content)) {
+      origins.push({url: 'https://fonts.gstatic.com', crossorigin: true});
+    }
+    if (/https:\/\/www.google-analytics.com/g.test(content)) {
+      origins.push({url: 'https://www.google-analytics.com', crossorigin: false});
+    }
+    return origins;
+  }
+
+  collectPreconnectOrigins(content: string) {
+    const origins = this.getPreconnectOrigins(content);
+    if (origins) {
+      origins.forEach(origin => this.preconnectOrigins.add(origin));
+    }
+  }
+
+  buildPreconnectElements(origins: PreconnectOrigin[]) {
+    return origins.map(({url, crossorigin}) => {
+      return html`<link rel="preconnect" href="${url}"${crossorigin ? 'crossorigin' : ''}>`;
+    });
+  }
+
+  /**
+   * Builds a `<link>` element used for styles.
+   * @param resource The style resource to load.
+   * @param async Whether the style should be loaded asynchronously.
+   * @returns The `<link>` element.
+   */
   buildStyleLinkElement(resource: Resource, async = true) {
     const href = this.getHrefFromResource(resource);
     const url = this.getUrl(href, {relative: true});
@@ -678,6 +728,7 @@ export class PageBuilder {
       );
     }
     this.resourceUrls.push(url);
+    this.collectPreconnectOrigins(url);
     return html`
       <link
         href="${url}"

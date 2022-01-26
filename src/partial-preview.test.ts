@@ -15,6 +15,8 @@ test('PatialPreview', async (t: ExecutionContext) => {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Preview Gallery | Example</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.google-analytics.com">
   <meta name="referrer" content="no-referrer">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Example">
@@ -28,6 +30,19 @@ test('PatialPreview', async (t: ExecutionContext) => {
   <link href="./../static/css/main.css?fingerprint=d41d8cd98f00b204e9800998ecf8427e" rel="stylesheet" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <script src="./../static/js/main.js?fingerprint=d41d8cd98f00b204e9800998ecf8427e"></script>
   <!-- Extra content inserted within the <head> element. -->
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+  </script>
   <script src="./../_page-builder/page-builder-ui.min.js"></script>
 </head>
 
