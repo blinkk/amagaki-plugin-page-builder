@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.0.1...v3.1.0) (2022-01-26)
+
+
+### Features
+
+* add smart preconnect tags to page head [#41](https://www.github.com/blinkk/amagaki-plugin-page-builder/issues/41) ([a4f5e41](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/a4f5e414d65e61ad7fbc2cd535f245e696899535))
+
 ### [3.0.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.0.0...v3.0.1) (2022-01-20)
 
 
