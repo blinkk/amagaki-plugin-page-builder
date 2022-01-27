@@ -171,6 +171,7 @@ export class PageBuilder {
   enableInspector: boolean;
   includeContext: boolean;
   preconnectOrigins: Set<PreconnectOrigin>;
+  private partialLoopIncrementer: number;
 
   constructor(
     doc: Document,
@@ -187,6 +188,7 @@ export class PageBuilder {
       this.options
     );
     this.preconnectOrigins = new Set();
+    this.partialLoopIncrementer = 0;
     this.includeContext = this.options.includeContext ?? this.enableInspector;
     this.partialPaths = options?.partialPaths ?? {
       content: ['/content/partials/${partial.partial}.yaml'],
@@ -587,7 +589,7 @@ export class PageBuilder {
     const viewPodPath = PageBuilder.selectPodPath(this.pod, this.partialPaths.view, name);
     const partialBuilder = [];
     const htmlId = partial.id ? ` id="${partial.id}"` : '';
-    partialBuilder.push(`<page-module${htmlId}>`);
+    partialBuilder.push(`<page-module${htmlId} partial="${name}" position="${this.partialLoopIncrementer+=1}">`);
     // Load resources required by partial module.
     if (cssPodPath) {
       const cssFile = this.pod.staticFile(cssPodPath)
@@ -599,7 +601,7 @@ export class PageBuilder {
     }
     if (this.enableInspector && partial.partial?.includeInspector !== false) {
       partialBuilder.push(html`
-        <page-module-inspector partial="${name}"></page-module-inspector>
+        <page-module-inspector></page-module-inspector>
       `);
     }
     const context = {...this.context, partial};
@@ -631,7 +633,7 @@ export class PageBuilder {
     if (this.options.beautifyContainer === false) {
       partialBuilder.push(`<page-module-container>${result?.trim()}</page-module-container>`);
     } else {
-      partialBuilder.push('<page-module-container>');
+      partialBuilder.push(`<page-module-container>`);
       partialBuilder.push(result?.trim());
       partialBuilder.push('</page-module-container>');
     } 

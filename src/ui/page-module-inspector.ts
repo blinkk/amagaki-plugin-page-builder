@@ -5,9 +5,6 @@ import {customElement, property} from 'lit/decorators.js';
 export class PageBuilderInspector extends LitElement {
   private pageModule: HTMLElement | null = null;
 
-  @property({type: String, attribute: 'partial'})
-  partial = '';
-
   constructor() {
     super();
   }
@@ -24,16 +21,8 @@ export class PageBuilderInspector extends LitElement {
   addIdToPageModule() {
     this.pageModule = this.parentElement as HTMLElement;
     if (this.pageModule && !this.pageModule.id) {
-      this.pageModule.id = `m${this.moduleIndex}`
+      this.pageModule.id = `m${this.position}`
     }
-  }
-
-  get allInspectors() {
-    return Array.from(document.querySelectorAll('page-module-inspector'));
-  }
-
-  get moduleIndex() {
-    return this.allInspectors.indexOf(this) + 1;
   }
 
   get enabled() {
@@ -42,6 +31,18 @@ export class PageBuilderInspector extends LitElement {
 
   get elementId() {
     return this.pageModule?.id;
+  }
+
+  get pageModuleElement() {
+    return this.closest('page-module') as HTMLElement;
+  }
+
+  get position() {
+    return this.pageModuleElement?.getAttribute('position');
+  }
+
+  get partial() {
+    return this.pageModuleElement?.getAttribute('partial');
   }
 
   static get styles() {
@@ -80,8 +81,7 @@ export class PageBuilderInspector extends LitElement {
         <div class="help-box">
           <div class="help-box__label">
             <a href="#${this.elementId}">
-              ${this.allInspectors.length > 1 ? `${this.moduleIndex}. ` : ''}
-              ${this.partial}
+              ${this.position}. ${this.partial}
             </a>
           </div>
         </div>

@@ -50,8 +50,8 @@ test('PatialPreview', async (t: ExecutionContext) => {
   <!-- Extra content inserted within the <body> element. -->
   <div class="main">
     <header>
-      <page-module>
-        <page-module-inspector partial="header"></page-module-inspector>
+      <page-module partial="header" position="1">
+        <page-module-inspector></page-module-inspector>
         <page-module-container>
           <div class="header">
             <p>Header</p>
@@ -67,7 +67,7 @@ test('PatialPreview', async (t: ExecutionContext) => {
       </page-module>
     </header>
     <main>
-      <page-module>
+      <page-module partial="partial-preview-gallery" position="2">
         <page-module-container>
           <div class="partial-preview-gallery">
             <ul>
