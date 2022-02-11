@@ -131,6 +131,9 @@ export interface PageBuilderOptions {
     /** Whether to add a `noindex` meta tag to the page. */
     noIndex?: boolean;
 
+    /** Append extra HTML to the top of the <head> element. */
+    prepend?: string[];
+
     /** Append extra HTML to the bottom of the <head> element. */
     extra?: string[];
 
@@ -395,6 +398,9 @@ export class PageBuilder {
   async buildHeadElement() {
     return html`
       <head>
+        ${this.options.head?.prepend
+          ? safeString(await this.buildExtraElements(this.options.head.prepend))
+          : ''}
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         ${this.buildHeadMetaElements({

@@ -12,6 +12,7 @@ test('PatialPreview', async (t: ExecutionContext) => {
 <html lang="en" itemscope itemtype="https://schema.org/WebPage">
 
 <head>
+  <!-- Extra content inserted at the top of the <head> element. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Preview Gallery | Example</title>

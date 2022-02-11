@@ -26,6 +26,7 @@ export default async (pod: Pod) => {
         'https://fonts.googleapis.com/css?family=Material+Icons|Roboto:400,500,700&display=swap',
         pod.staticFile('/dist/css/main.css'),
       ],
+      prepend: ['/views/head-prepend.njk'],
       extra: ['/views/head.njk']
     },
     body: {
