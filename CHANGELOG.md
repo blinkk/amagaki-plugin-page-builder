@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.1.0...v3.2.0) (2022-02-11)
+
+
+### Features
+
+* add prepend option for head ([93d78f8](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/93d78f88836c1e3bed68fd498da4db8bd1b38beb))
+
 ## [3.1.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.0.1...v3.1.0) (2022-01-26)
 
 
