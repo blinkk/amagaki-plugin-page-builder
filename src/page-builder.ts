@@ -711,6 +711,7 @@ export class PageBuilder {
     const origins: PreconnectOrigin[] = [];
     if (/https:\/\/fonts.googleapis.com/g.test(content)) {
       origins.push({url: 'https://fonts.gstatic.com', crossorigin: true});
+      origins.push({url: 'https://fonts.googleapis.com', crossorigin: true});
     }
     if (/https:\/\/www.google-analytics.com/g.test(content)) {
       origins.push({url: 'https://www.google-analytics.com', crossorigin: false});
@@ -725,15 +726,19 @@ export class PageBuilder {
     const origins = this.getPreconnectOrigins(content);
     if (origins) {
       for (const origin of origins) {
-        !this.preconnectOrigins.has(origin) &&
-          this.preconnectOrigins.add(origin);
+        this.preconnectOrigins.add(origin);
       }
     }
   }
 
   buildPreconnectElements(origins: PreconnectOrigin[]) {
+    const added = new Set<string>();
     return origins.map(({url, crossorigin}) => {
-      return html`<link rel="preconnect" href="${url}"${crossorigin ? 'crossorigin' : ''}>`;
+      if (!added.has(url)) {
+        added.add(url);
+        return html`<link rel="preconnect" href="${url}"${crossorigin ? 'crossorigin' : ''}>`;
+      }
+      return '';
     });
   }
 
