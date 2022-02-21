@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.2.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.2.0...v3.2.1) (2022-02-21)
+
+
+### Bug Fixes
+
+* simplify serialization of pod objects ([3c3a38b](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/3c3a38bfd4603ddb8cae91ea5730a359115ad7c1))
+
 ## [3.2.0](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.1.0...v3.2.0) (2022-02-11)
 
 
