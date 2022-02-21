@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.2.3](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.2.2...v3.2.3) (2022-02-21)
+
+
+### Bug Fixes
+
+* ensure preconnect origins are deduped ([274cb55](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/274cb557c240ab2f74db1cfcab364ea3a560556a))
+
 ### [3.2.2](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.2.1...v3.2.2) (2022-02-21)
 
 
