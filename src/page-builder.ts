@@ -352,6 +352,12 @@ export class PageBuilder {
       if (value?.constructor?.name === 'Pod' && value.root) {
         return undefined;
       }
+      if (value?.constructor?.name === 'Locale' && value.podPath) {
+        return (value as Locale).id;
+      }
+      if (value?.constructor?.name === 'Url' && value.podPath) {
+        return (value as Url).toString();
+      }
       return value;
     }), 2);
   }
