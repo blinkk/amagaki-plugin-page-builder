@@ -721,7 +721,10 @@ export class PageBuilder {
   collectPreconnectOrigins(content: string) {
     const origins = this.getPreconnectOrigins(content);
     if (origins) {
-      origins.forEach(origin => this.preconnectOrigins.add(origin));
+      for (const origin of origins) {
+        !this.preconnectOrigins.has(origin) &&
+          this.preconnectOrigins.add(origin);
+      }
     }
   }
 
