@@ -711,6 +711,7 @@ export class PageBuilder {
     const origins: PreconnectOrigin[] = [];
     if (/https:\/\/fonts.googleapis.com/g.test(content)) {
       origins.push({url: 'https://fonts.gstatic.com', crossorigin: true});
+      origins.push({url: 'https://fonts.googleapis.com', crossorigin: true});
     }
     if (/https:\/\/www.google-analytics.com/g.test(content)) {
       origins.push({url: 'https://www.google-analytics.com', crossorigin: false});

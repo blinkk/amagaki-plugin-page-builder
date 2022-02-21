@@ -17,6 +17,7 @@ test('PatialPreview', async (t: ExecutionContext) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Preview Gallery | Example</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://www.google-analytics.com">
   <meta name="referrer" content="no-referrer">
   <meta property="og:type" content="website">
