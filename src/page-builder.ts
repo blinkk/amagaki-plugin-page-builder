@@ -358,6 +358,14 @@ export class PageBuilder {
       if (value?.constructor?.name === 'Url' && value.podPath) {
         return (value as Url).toString();
       }
+      if (DataType.isDocument(value)) {
+        const doc = value as Document;
+        return {
+          body: doc.body,
+          fields: doc.fields,
+          locale: doc.locale.id,
+        };
+      }
       return value;
     }), 2);
   }
