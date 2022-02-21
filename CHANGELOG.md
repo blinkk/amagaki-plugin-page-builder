@@ -1,5 +1,13 @@
 # Changelog
 
+### [3.2.2](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.2.1...v3.2.2) (2022-02-21)
+
+
+### Bug Fixes
+
+* beautify sitemap and robots output ([eebd05a](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/eebd05a86029e5e3b72cdf0f7a74c8d948932118))
+* simplify document serialization ([4aecc2f](https://www.github.com/blinkk/amagaki-plugin-page-builder/commit/4aecc2fd9862323089f02fa6e90743f3087b9a4c))
+
 ### [3.2.1](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.2.0...v3.2.1) (2022-02-21)
 
 
