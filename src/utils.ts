@@ -1,6 +1,7 @@
 import nunjucks from 'nunjucks';
 
 const SafeString = nunjucks.runtime.SafeString;
+
 // @ts-ignore `escape` type not defined on `nunjucks.lib`.
 const escape = nunjucks.lib.escape;
 
