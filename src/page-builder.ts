@@ -715,6 +715,9 @@ export class PageBuilder {
     if (/https:\/\/www.google-analytics.com/g.test(content)) {
       origins.push({url: 'https://www.google-analytics.com', crossorigin: false});
     }
+    if (/https:\/\/www.googletagmanager.com\/gtm.js\?id=/g.test(content)) {
+      origins.push({url: 'https://www.googletagmanager.com', crossorigin: false});
+    }
     return origins;
   }
 
