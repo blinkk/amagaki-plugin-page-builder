@@ -5,6 +5,7 @@ import {
   RouteProvider,
   Router,
 } from '@amagaki/amagaki';
+import jsBeautify from 'js-beautify';
 
 export interface SitemapPluginOptions {
   sitemapPath?: string;
@@ -45,10 +46,7 @@ class RobotsTxtRoute extends Route {
 
   async build() {
     // TODO: Add Sitemap property, hook into document.
-    return `
-      User-agent: *
-      Allow: /
-    `;
+    return 'User-agent: *\nAllow: /';
   }
 }
 
@@ -89,11 +87,12 @@ class SitemapRoute extends Route {
         (route as DocumentRoute).locale === this.pod.defaultLocale &&
         !route.urlPath.includes('/404/')
     );
-    return (
+    const text = (
       await njk.renderFromString(this.templateSource, {
         routes: routes,
         pod: this.pod,
       })
     ).replace(/^\s*[\r\n]/gm, '');
+    return jsBeautify.html(text, {indent_size: 2});
   }
 }

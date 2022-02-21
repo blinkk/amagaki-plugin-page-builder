@@ -12,6 +12,7 @@
   "version": "3.2.1",
   "main": "./dist/index.js",
   "scripts": {
+    "build:example": "npx amagaki build example",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc; npx gulp build;",
