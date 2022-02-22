@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.4.0](https://github.com/blinkk/amagaki-plugin-page-builder/compare/v3.2.2...v3.4.0) (2022-02-22)
+
+
+### Features
+
+* add googletagmanager.com to preconnect builder ([9612512](https://github.com/blinkk/amagaki-plugin-page-builder/commit/961251232e807cd3b5c158219b0130131bd59efe))
+
+
+### Bug Fixes
+
+* add fonts.googleapis.com to preconnect builder ([5ea60a8](https://github.com/blinkk/amagaki-plugin-page-builder/commit/5ea60a8882ee606ee0c4e7b7f1f5c16077ebac5d))
+* ensure preconnect origins are deduped ([274cb55](https://github.com/blinkk/amagaki-plugin-page-builder/commit/274cb557c240ab2f74db1cfcab364ea3a560556a))
+* update release-please ([258bc61](https://github.com/blinkk/amagaki-plugin-page-builder/commit/258bc6100678f23218c1b2cb5739b53429d2ba1b))
+
+
+### Miscellaneous Chores
+
+* release 3.4.0 ([b983d7f](https://github.com/blinkk/amagaki-plugin-page-builder/commit/b983d7f38ad0535fb855b0d44cf42c937395bb2e))
+
 ### [3.2.2](https://www.github.com/blinkk/amagaki-plugin-page-builder/compare/v3.2.1...v3.2.2) (2022-02-21)
 
 
