@@ -29,20 +29,44 @@ interface BuiltinPartial {
  * The pod path formats for CSS, JS, and the template for each partial. Values are interpolated.
  */
 interface PartialPaths {
-  /** The path format to load content for a partial. Note: This is optional. Most partials will use page-specific content. Some global partials, e.g. a header and footer, will use shared content. Default: `[/content/partials/${partial.partial}.yaml]` */
+  /** The path format to load content for a partial. Note: This is optional.
+   * Most partials will use page-specific content. Some global partials, e.g. a
+   * header and footer, will use shared content. Default:
+   * `[/content/partials/${partial.partial}.yaml]` */
   content?: string[];
-  /** The path format to load the CSS for a partial. Default: `[/dist/css/partials/${partial.partial}.css]` */
+
+  /** The path format to load the CSS for a partial. Default:
+   * `[/dist/css/partials/${partial.partial}.css]` */
   css: string[];
-  /** The path format to load the JS for a partial. Default: `[/dist/js/partials/${partial.partial}.js]` */
+
+  /** The path format to load the JS for a partial. Default:
+   * `[/dist/js/partials/${partial.partial}.js]` */
   js: string[];
-  /** The path format to the view for a partial. Default: `[/views/partials/${partial.partial}.njk]` */
+
+  /** The path format to the view for a partial. Default:
+   * `[/views/partials/${partial.partial}.njk]` */
   view: string[];
+
+  /** Whether to load scripts for partials using `type="module"`. Default:
+   * false. */
+  module?: boolean;
 }
 
 type ResourceLoader = {
+  /** The reference to the resource, used as the `src` for scripts or the `href`
+   * for styles. Accepts either `StaticFile` objects or URLs as strings. */
   href: StaticFile | string;
+
+  /** Whether to use `async` when loading scripts, or whether to load styles
+   * asynchronously using the technique described on
+   * https://web.dev/defer-non-critical-css/. */
   async?: boolean;
+
+  /** Whether to use `defer` when loading scripts. */
   defer?: boolean;
+
+  /** Whether to use `type="module"` when loading scripts. */
+  module?: boolean;
 };
 
 type Resource = StaticFile | string | ResourceLoader;
@@ -610,6 +634,7 @@ export class PageBuilder {
     const partialBuilder = [];
     const htmlId = partial.id ? ` id="${partial.id}"` : '';
     partialBuilder.push(`<page-module${htmlId} partial="${name}" position="${this.partialLoopIncrementer+=1}">`);
+
     // Load resources required by partial module.
     if (cssPodPath) {
       const cssFile = this.pod.staticFile(cssPodPath)
@@ -617,7 +642,11 @@ export class PageBuilder {
     }
     if (jsPodPath) {
       const jsFile = this.pod.staticFile(jsPodPath);
-      partialBuilder.push(this.buildScriptElement(jsFile));
+      const module = this.partialPaths.module;
+      partialBuilder.push(this.buildScriptElement({
+        href: jsFile,
+        module: module,
+      }));
     }
     if (this.enableInspector && partial.partial?.includeInspector !== false) {
       partialBuilder.push(html`
@@ -687,6 +716,7 @@ export class PageBuilder {
   buildScriptElement(resource: Resource, defer = false, async = false) {
     const href = this.getHrefFromResource(resource);
     const url = this.getUrl(href, {relative: true});
+    const module = (resource as ResourceLoader)?.module;
     // Resource has already been loaded, don't build again.
     if (this.resourceUrls.includes(url)) {
       return '';
@@ -700,6 +730,7 @@ export class PageBuilder {
     return html`
       <script
         src="${url}"
+        ${module ? html`type="module"` : ''}
         ${defer ? 'defer' : ''}
         ${async ? 'async' : ''}
       ></script>
