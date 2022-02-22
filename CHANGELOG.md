@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/blinkk/amagaki-plugin-page-builder/compare/v3.4.0...v3.5.0) (2022-02-22)
+
+
+### Features
+
+* add type=module support for loading scripts ([cc5b242](https://github.com/blinkk/amagaki-plugin-page-builder/commit/cc5b242289f70b46152a626e60d486b397730637))
+
 ## [3.4.0](https://github.com/blinkk/amagaki-plugin-page-builder/compare/v3.2.2...v3.4.0) (2022-02-22)
 
 
